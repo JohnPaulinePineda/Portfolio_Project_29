@@ -712,8 +712,16 @@ dim(PMA_PreModelling_Train)
 |
 | Exploratory data analysis:
 |
-| **[A]** Details
-|             **[A.1.1]** Details
+| **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables include:
+|      **[A.1]** <span style="color: #FF0000">peak.vo2</span> variable (numeric)
+|      **[A.2]** <span style="color: #FF0000">interval</span> variable (numeric)
+|      **[A.3]** <span style="color: #FF0000">sodium</span> variable (numeric)
+|
+| **[B]** Factor variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables include:
+|      **[B.1]** <span style="color: #FF0000">betablk</span> variable (factor)
+|      **[B.2]** <span style="color: #FF0000">diuretic.thiazide</span> variable (factor)
+|      **[B.3]** <span style="color: #FF0000">digoxin</span> variable (factor)
+|      **[B.4]** <span style="color: #FF0000">insulin</span> variable (factor)
 |
 ```{r section_1.4, warning=FALSE, message=FALSE}
 ##################################
@@ -830,15 +838,41 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 ###  1.5.1 Concordance Index (CIN)
 |
 | [CIN](https://jamanetwork.com/journals/jama/article-abstract/372568)  is a rank correlation measure between a predictor and a possibly censored outcome with an event or censoring indicator. In survival analysis, a pair of patients is called concordant if the risk of the event predicted by a model is lower for the patient who experiences the event at a later time point. The concordance probability (C-index) is the frequency of concordant pairs among all pairs of subjects which can be used to measure and compare the discrimination power of risk prediction models.
-.
 |
 | **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
-##################################
-# Details
-##################################
+# ##################################
+# # Creating a local object
+# # for the train set
+# ##################################
+# PMA_PreModelling_Train_LR <- PMA_PreModelling_Train
+# 
+# ##################################
+# # Formulating the Random Survival Forest model
+# ##################################
+# RSF_Model <-  rfsrc(Surv(ttodead, died)~., 
+#                     data = PMA_PreModelling_Train, 
+#                     nsplit = 3, 
+#                     ntree = 500)
+# 
+#   #fit the models
+#   fitrsf = rfsrc(Surv(time, status)~., data = train_data, nsplit = 3, ntree = 500)
+#   mat_rsf = predict(fitrsf, test_data)$survival
+#   
+#   dis_time = fitrsf$time.interest
+#   fitcox = coxph(Surv(time, status)~., data = train_data, x = TRUE)
+#   mat_cox = predictSurvProb(fitcox, test_data, dis_time)
+#   
+#   #calculate the C index
+#   med_index = median(1:length(dis_time))
+#   surv_obj = Surv(test_data$time, test_data$status)
+#   
+#   #C index for Cox
+#   metrics_cox[i] = Cindex(surv_obj, predicted = mat_cox[, med_index])
+#   #C index for RSF
+#   metrics_rsf[i] = Cindex(surv_obj, predicted = mat_rsf[, med_index])
 
 ```
 

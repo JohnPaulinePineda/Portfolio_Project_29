@@ -3405,8 +3405,28 @@ dependencies<br />
 <div class="line-block"><br />
 Exploratory data analysis:<br />
 <br />
-<strong>[A]</strong> Details<br />
-            <strong>[A.1.1]</strong> Details<br />
+<strong>[A]</strong> Numeric variables which demonstrated differential
+relationships with the <span style="color: #FF0000">ttodead</span> and
+<span style="color: #FF0000">died</span> survival time and event status
+variables include:<br />
+     <strong>[A.1]</strong> <span style="color: #FF0000">peak.vo2</span>
+variable (numeric)<br />
+     <strong>[A.2]</strong> <span style="color: #FF0000">interval</span>
+variable (numeric)<br />
+     <strong>[A.3]</strong> <span style="color: #FF0000">sodium</span>
+variable (numeric)<br />
+<br />
+<strong>[B]</strong> Factor variables which demonstrated differential
+relationships with the <span style="color: #FF0000">ttodead</span> and
+<span style="color: #FF0000">died</span> survival time and event status
+variables include:<br />
+     <strong>[B.1]</strong> <span style="color: #FF0000">betablk</span>
+variable (factor)<br />
+     <strong>[B.2]</strong> <span style="color: #FF0000">diuretic.thiazide</span> variable (factor)<br />
+     <strong>[B.3]</strong> <span style="color: #FF0000">digoxin</span>
+variable (factor)<br />
+     <strong>[B.4]</strong> <span style="color: #FF0000">insulin</span>
+variable (factor)<br />
 </div>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
 <span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading dataset</span></span>
@@ -3557,15 +3577,43 @@ event predicted by a model is lower for the patient who experiences the
 event at a later time point. The concordance probability (C-index) is
 the frequency of concordant pairs among all pairs of subjects which can
 be used to measure and compare the discrimination power of risk
-prediction models.</div>
-<p>. | | <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
+prediction models.<br />
+<br />
+<strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
 <mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
-| <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> =
-details. |</p>
-<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
-<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
+     <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
+</div>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="co"># PMA_PreModelling_Train_LR &lt;- PMA_PreModelling_Train</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a><span class="co"># # Formulating the Random Survival Forest model</span></span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~., </span></span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a><span class="co">#                     data = PMA_PreModelling_Train, </span></span>
+<span id="cb74-12"><a href="#cb74-12" aria-hidden="true" tabindex="-1"></a><span class="co">#                     nsplit = 3, </span></span>
+<span id="cb74-13"><a href="#cb74-13" aria-hidden="true" tabindex="-1"></a><span class="co">#                     ntree = 500)</span></span>
+<span id="cb74-14"><a href="#cb74-14" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb74-15"><a href="#cb74-15" aria-hidden="true" tabindex="-1"></a><span class="co">#   #fit the models</span></span>
+<span id="cb74-16"><a href="#cb74-16" aria-hidden="true" tabindex="-1"></a><span class="co">#   fitrsf = rfsrc(Surv(time, status)~., data = train_data, nsplit = 3, ntree = 500)</span></span>
+<span id="cb74-17"><a href="#cb74-17" aria-hidden="true" tabindex="-1"></a><span class="co">#   mat_rsf = predict(fitrsf, test_data)$survival</span></span>
+<span id="cb74-18"><a href="#cb74-18" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb74-19"><a href="#cb74-19" aria-hidden="true" tabindex="-1"></a><span class="co">#   dis_time = fitrsf$time.interest</span></span>
+<span id="cb74-20"><a href="#cb74-20" aria-hidden="true" tabindex="-1"></a><span class="co">#   fitcox = coxph(Surv(time, status)~., data = train_data, x = TRUE)</span></span>
+<span id="cb74-21"><a href="#cb74-21" aria-hidden="true" tabindex="-1"></a><span class="co">#   mat_cox = predictSurvProb(fitcox, test_data, dis_time)</span></span>
+<span id="cb74-22"><a href="#cb74-22" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb74-23"><a href="#cb74-23" aria-hidden="true" tabindex="-1"></a><span class="co">#   #calculate the C index</span></span>
+<span id="cb74-24"><a href="#cb74-24" aria-hidden="true" tabindex="-1"></a><span class="co">#   med_index = median(1:length(dis_time))</span></span>
+<span id="cb74-25"><a href="#cb74-25" aria-hidden="true" tabindex="-1"></a><span class="co">#   surv_obj = Surv(test_data$time, test_data$status)</span></span>
+<span id="cb74-26"><a href="#cb74-26" aria-hidden="true" tabindex="-1"></a><span class="co">#   </span></span>
+<span id="cb74-27"><a href="#cb74-27" aria-hidden="true" tabindex="-1"></a><span class="co">#   #C index for Cox</span></span>
+<span id="cb74-28"><a href="#cb74-28" aria-hidden="true" tabindex="-1"></a><span class="co">#   metrics_cox[i] = Cindex(surv_obj, predicted = mat_cox[, med_index])</span></span>
+<span id="cb74-29"><a href="#cb74-29" aria-hidden="true" tabindex="-1"></a><span class="co">#   #C index for RSF</span></span>
+<span id="cb74-30"><a href="#cb74-30" aria-hidden="true" tabindex="-1"></a><span class="co">#   metrics_rsf[i] = Cindex(surv_obj, predicted = mat_rsf[, med_index])</span></span></code></pre></div>
 </div>
 <div id="brier-score-bsc" class="section level3">
 <h3>1.5.2 Brier Score (BSC)</h3>
