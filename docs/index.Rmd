@@ -875,7 +875,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.4 Integrated Absolute Error (IAE)
 |
-| [IAE](https://cn.bing.com/) details.
+| [IAE](https://link.springer.com/article/10.1007/s10985-016-9372-1) is a type of continuous-time approach to continuous-time identification based on least-absolute errors.
 |
 | **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
@@ -890,7 +890,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.5 Integrated Square Error (ISE)
 |
-| [ISE](https://cn.bing.com/) details.
+| [ISE](https://link.springer.com/article/10.1007/s11424-021-9307-0) is a type of continuous-time approach to continuous-time identification based on least-squares errors.
 |
 | **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
@@ -983,6 +983,8 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 | **[Publication]** [Evaluating the Yield of Medical Tests](https://jamanetwork.com/journals/jama/article-abstract/372568) by Frank Harrell, Robert Califf, David Pryor, Kerry Lee and Robert Rosati (Journal of the American Medical Association)
 | **[Publication]** [Verification of Forecasts Expressed in Terms of Probability](https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml) by Glenn Brier (Monthly Weather Review)
 | **[Publication]** [A New Measure of Prognostic Separation in Survival Data](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) by Patrick Royston and Willi Sauerbrei (Statistics in Medicine)
+| **[Publication]** [L1 Splitting Rules in Survival Forests](https://link.springer.com/article/10.1007/s10985-016-9372-1) by Hoora Moradian, Denis Larocque and François Bellavance (Lifetime Data Analysis)
+| **[Publication]** [Integrated Square Error of Hazard Rate Estimation for Survival Data with Missing Censoring Indicators](https://link.springer.com/article/10.1007/s11424-021-9307-0) by Yuye Zou, Guoliang Fan and Riquan Zhang (Journal of Systems Science and Complexity)
 | **[Tutorial]** [Survival Analysis / Time-To-Event Analysis in R](https://campus.datacamp.com/courses/survival-analysis-in-r/what-is-survival-analysis?ex=1) by Heidi Seibold (Datacamp)
 |
 |
