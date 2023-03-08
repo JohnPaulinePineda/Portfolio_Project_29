@@ -905,7 +905,8 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.6 Mean Absolute Error (MAE)
 |
-| [MAE](https://cn.bing.com/) details.
+| [MAE](https://cn.bing.com/) is the average of the differences between the predicted time values and the actual observation time
+values, by only considering samples for which the event occurs.
 |
 | **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
@@ -985,6 +986,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 | **[Publication]** [A New Measure of Prognostic Separation in Survival Data](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) by Patrick Royston and Willi Sauerbrei (Statistics in Medicine)
 | **[Publication]** [L1 Splitting Rules in Survival Forests](https://link.springer.com/article/10.1007/s10985-016-9372-1) by Hoora Moradian, Denis Larocque and François Bellavance (Lifetime Data Analysis)
 | **[Publication]** [Integrated Square Error of Hazard Rate Estimation for Survival Data with Missing Censoring Indicators](https://link.springer.com/article/10.1007/s11424-021-9307-0) by Yuye Zou, Guoliang Fan and Riquan Zhang (Journal of Systems Science and Complexity)
+| **[Publication]** [The Explained Variation in Proportional Hazards Regression](https://www.jstor.org/stable/2336066) by Michael Schemper (Biometrika)
 | **[Tutorial]** [Survival Analysis / Time-To-Event Analysis in R](https://campus.datacamp.com/courses/survival-analysis-in-r/what-is-survival-analysis?ex=1) by Heidi Seibold (Datacamp)
 |
 |
