@@ -60,6 +60,7 @@ library(caret)
 library(corrplot)
 library(randomForestSRC)
 library(SurvMetrics)
+library(pec)
 
 
 ##################################
@@ -691,9 +692,9 @@ if (DPA_LinearlyDependentCount > 0) {
 # zero and near-zero variance,
 # to create the pre-modelling dataset
 ##################################
-PMA__ExcludedLowVariance <- peakVO2[,!names(peakVO2) %in% c("dilver","nifed")]
+PMA_ExcludedLowVariance <- peakVO2[,!names(peakVO2) %in% c("dilver","nifed")]
 
-PMA_PreModelling_Train <- PMA__ExcludedLowVariance
+PMA_PreModelling_Train <- PMA_ExcludedLowVariance
 
 ##################################
 # Gathering descriptive statistics
@@ -843,36 +844,84 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
-# ##################################
-# # Creating a local object
-# # for the train set
-# ##################################
-# PMA_PreModelling_Train_LR <- PMA_PreModelling_Train
-# 
-# ##################################
-# # Formulating the Random Survival Forest model
-# ##################################
-# RSF_Model <-  rfsrc(Surv(ttodead, died)~., 
-#                     data = PMA_PreModelling_Train, 
-#                     nsplit = 3, 
-#                     ntree = 500)
-# 
-#   #fit the models
-#   fitrsf = rfsrc(Surv(time, status)~., data = train_data, nsplit = 3, ntree = 500)
-#   mat_rsf = predict(fitrsf, test_data)$survival
-#   
-#   dis_time = fitrsf$time.interest
-#   fitcox = coxph(Surv(time, status)~., data = train_data, x = TRUE)
-#   mat_cox = predictSurvProb(fitcox, test_data, dis_time)
-#   
-#   #calculate the C index
-#   med_index = median(1:length(dis_time))
-#   surv_obj = Surv(test_data$time, test_data$status)
-#   
-#   #C index for Cox
-#   metrics_cox[i] = Cindex(surv_obj, predicted = mat_cox[, med_index])
-#   #C index for RSF
-#   metrics_rsf[i] = Cindex(surv_obj, predicted = mat_rsf[, med_index])
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_CIN <- peakVO2.Source[,!names(peakVO2) %in% c("dilver","nifed")]
+
+##################################
+# Initializing data containers
+# and random seed
+##################################
+set.seed(88888888)
+RSF_Model_CIN = 0
+CPH_Model_CIN = 0
+
+for (i in 1:50) {
+ ##################################
+ # Formulating the train and test sets 
+ ##################################
+ MA_CIN_Index = createFolds(1:nrow(MA_CIN), 2)
+ MA_CIN_Train = MA_CIN[MA_CIN_Index[[1]],]
+ MA_CIN_Test = MA_CIN[MA_CIN_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_CIN_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_CIN_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_CIN_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model, 
+                                  MA_CIN_Test, 
+                                  Ordered_Unique_Death_Time)
+ 
+ ##################################
+ # Calculating the Concordance Indices
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_CIN_Test$ttodead, MA_CIN_Test$died)
+
+ RSF_Model_CIN[i] <- Cindex(Survival_Object,
+                            predicted = RSF_Model_Pred[,Median_Index])
+
+ CPH_Model_CIN[i] <- Cindex(Survival_Object,
+                            predicted = CPH_Model_Pred[,Median_Index])
+
+}
+
+##################################
+# Consolidating the repeated 
+# split-sample validated Concordance Indices
+##################################
+(SplitValidation_CIN = data.frame('CIN' = c(CPH_Model_CIN, RSF_Model_CIN),
+                                 'Model' = c(rep('CPH', 50), rep('RSF', 50)),
+                                 'Metric' = c(rep('CIN', 100))))
+
+bwplot(CIN ~ Model | Metric,  
+       data = SplitValidation_CIN,
+       xlab = "Survival Model", 
+       ylab = "Concordance Index")
 
 ```
 
