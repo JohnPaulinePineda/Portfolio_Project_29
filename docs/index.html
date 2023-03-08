@@ -3549,13 +3549,20 @@ Exploratory data analysis:<br />
 <div id="concordance-index-cin" class="section level3">
 <h3>1.5.1 Concordance Index (CIN)</h3>
 <div class="line-block"><br />
-<a href="https://cn.bing.com/">CIN</a> details.<br />
-<br />
-<strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
-<mark style="background-color: #CCECFF"><strong>Package</strong></mark>
+<a href="https://jamanetwork.com/journals/jama/article-abstract/372568">CIN</a>
+is a rank correlation measure between a predictor and a possibly
+censored outcome with an event or censoring indicator. In survival
+analysis, a pair of patients is called concordant if the risk of the
+event predicted by a model is lower for the patient who experiences the
+event at a later time point. The concordance probability (C-index) is
+the frequency of concordant pairs among all pairs of subjects which can
+be used to measure and compare the discrimination power of risk
+prediction models.</div>
+<p>. | | <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
+<mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
-     <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
-</div>
+| <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> =
+details. |</p>
 <div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
 <span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
 <span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
@@ -3563,10 +3570,14 @@ package.<br />
 <div id="brier-score-bsc" class="section level3">
 <h3>1.5.2 Brier Score (BSC)</h3>
 <div class="line-block"><br />
-<a href="https://cn.bing.com/">BSC</a> details.<br />
+<a href="https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml">BSC</a>
+is the mean square difference between the true classes and predicted
+probabilities. Serving as a a form of cost function, it is considered a
+proper score which means that it takes its minimal value only when the
+predicted probabilities match the empirical probabilities.<br />
 <br />
 <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
-<mark style="background-color: #CCECFF"><strong>Package</strong></mark>
+<mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
@@ -3577,13 +3588,16 @@ package.<br />
 <div id="integrated-brier-score-ibsc" class="section level3">
 <h3>1.5.3 Integrated Brier Score (IBSC)</h3>
 <div class="line-block"><br />
-<a href="https://cn.bing.com/">IBSC</a> details.<br />
-<br />
-<strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
-<mark style="background-color: #CCECFF"><strong>Package</strong></mark>
+<a href="https://onlinelibrary.wiley.com/doi/10.1002/sim.1621">IBSC</a>
+is the integrated weighted squared distance between the estimated
+survival function and the empirical survival function. The inverse
+probability censoring weighting(IPCW) is used to adjust for
+censoring.</div>
+<p>. | | <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
+<mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
-     <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
-</div>
+| <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> =
+details. |</p>
 <div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
 <span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
 <span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
@@ -3594,7 +3608,7 @@ package.<br />
 <a href="https://cn.bing.com/">IAE</a> details.<br />
 <br />
 <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
-<mark style="background-color: #CCECFF"><strong>Package</strong></mark>
+<mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
@@ -3608,7 +3622,7 @@ package.<br />
 <a href="https://cn.bing.com/">ISE</a> details.<br />
 <br />
 <strong>[A]</strong> Details <span style="color: #FF0000">Variable</span> using the
-<mark style="background-color: #CCECFF"><strong>Package</strong></mark>
+<mark style="background-color: #CCECFF"><strong>SurvMetrics</strong></mark>
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
@@ -3744,6 +3758,16 @@ Cancer)<br />
 <strong>[Publication]</strong> <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394469/">Survival
 Analysis Part IV: Further Concepts and Methods in Survival Analysis</a>
 by Taane Clark (British Journal of Cancer)<br />
+<strong>[Publication]</strong> <a href="https://jamanetwork.com/journals/jama/article-abstract/372568">Evaluating
+the Yield of Medical Tests</a> by Frank Harrell, Robert Califf, David
+Pryor, Kerry Lee and Robert Rosati (Journal of the American Medical
+Association)<br />
+<strong>[Publication]</strong> <a href="https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml">Verification
+of Forecasts Expressed in Terms of Probability</a> by Glenn Brier
+(Monthly Weather Review)<br />
+<strong>[Publication]</strong> <a href="https://onlinelibrary.wiley.com/doi/10.1002/sim.1621">A New
+Measure of Prognostic Separation in Survival Data</a> by Patrick Royston
+and Willi Sauerbrei (Statistics in Medicine)<br />
 <strong>[Tutorial]</strong> <a href="https://campus.datacamp.com/courses/survival-analysis-in-r/what-is-survival-analysis?ex=1">Survival
 Analysis / Time-To-Event Analysis in R</a> by Heidi Seibold
 (Datacamp)<br />

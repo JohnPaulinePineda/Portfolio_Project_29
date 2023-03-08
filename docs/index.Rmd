@@ -829,13 +829,13 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.1 Concordance Index (CIN)
 |
-| [CIN](https://cn.bing.com/) details.
+| [CIN](https://jamanetwork.com/journals/jama/article-abstract/372568)  is a rank correlation measure between a predictor and a possibly censored outcome with an event or censoring indicator. In survival analysis, a pair of patients is called concordant if the risk of the event predicted by a model is lower for the patient who experiences the event at a later time point. The concordance probability (C-index) is the frequency of concordant pairs among all pairs of subjects which can be used to measure and compare the discrimination power of risk prediction models.
+.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
-
 ##################################
 # Details
 ##################################
@@ -844,9 +844,9 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.2 Brier Score (BSC)
 |
-| [BSC](https://cn.bing.com/) details.
+| [BSC](https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml) is the mean square difference between the true classes and predicted probabilities. Serving as a a form of cost function, it is considered a proper score which means that it takes its minimal value only when the predicted probabilities match the empirical probabilities.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.2, warning=FALSE, message=FALSE}
@@ -859,9 +859,10 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 
 ###  1.5.3 Integrated Brier Score (IBSC)
 |
-| [IBSC](https://cn.bing.com/) details.
+| [IBSC](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) is the integrated weighted squared distance between the estimated survival function and the empirical survival function. The inverse probability censoring weighting(IPCW) is used to adjust for censoring.
+.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.3, warning=FALSE, message=FALSE}
@@ -876,7 +877,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 |
 | [IAE](https://cn.bing.com/) details.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.4, warning=FALSE, message=FALSE}
@@ -891,7 +892,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 |
 | [ISE](https://cn.bing.com/) details.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.5, warning=FALSE, message=FALSE}
@@ -979,6 +980,9 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
 | **[Publication]** [Survival Analysis Part II: Multivariate Data Analysis – An Introduction to Concepts and Methods](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394368/) by Mike Bradburn (British Journal of Cancer)
 | **[Publication]** [Survival Analysis Part III: Multivariate Data Analysis – Choosing a Model and Assessing its Adequacy and Fit](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2376927/) by Mike Bradburn (British Journal of Cancer)
 | **[Publication]** [Survival Analysis Part IV: Further Concepts and Methods in Survival Analysis](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2394469/) by Taane Clark (British Journal of Cancer)
+| **[Publication]** [Evaluating the Yield of Medical Tests](https://jamanetwork.com/journals/jama/article-abstract/372568) by Frank Harrell, Robert Califf, David Pryor, Kerry Lee and Robert Rosati (Journal of the American Medical Association)
+| **[Publication]** [Verification of Forecasts Expressed in Terms of Probability](https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml) by Glenn Brier (Monthly Weather Review)
+| **[Publication]** [A New Measure of Prognostic Separation in Survival Data](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) by Patrick Royston and Willi Sauerbrei (Statistics in Medicine)
 | **[Tutorial]** [Survival Analysis / Time-To-Event Analysis in R](https://campus.datacamp.com/courses/survival-analysis-in-r/what-is-survival-analysis?ex=1) by Heidi Seibold (Datacamp)
 |
 |
