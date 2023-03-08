@@ -1,5 +1,5 @@
 ---
-title: 'R : Exploring Evaluation Metrics for Survival Prediction'
+title: 'R : Exploring Performance Evaluation Metrics for Survival Prediction'
 author: "John Pauline Pineda"
 date: "March 11, 2023"
 output: 
