@@ -943,7 +943,6 @@ bwplot(CIN ~ Model | Metric,
 ###  1.5.3 Integrated Brier Score (IBSC)
 |
 | [IBSC](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) is the integrated weighted squared distance between the estimated survival function and the empirical survival function. The inverse probability censoring weighting(IPCW) is used to adjust for censoring.
-.
 |
 | **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
@@ -988,10 +987,9 @@ bwplot(CIN ~ Model | Metric,
 
 ###  1.5.6 Mean Absolute Error (MAE)
 |
-| [MAE](https://cn.bing.com/) is the average of the differences between the predicted time values and the actual observation time
-values, by only considering samples for which the event occurs.
+| [MAE](https://cn.bing.com/) is the average of the differences between the predicted time values and the actual observation time values, by only considering samples for which the event occurs.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**Package**</mark> package.  
+| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.6, warning=FALSE, message=FALSE}
