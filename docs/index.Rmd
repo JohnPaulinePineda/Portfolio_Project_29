@@ -69,6 +69,11 @@ library(pec)
 ##################################
 data(peakVO2)
 peakVO2 <- as.data.frame(peakVO2)
+
+##################################
+# Converting survival time
+# to discrete monthly data
+##################################
 peakVO2$ttodead <- ceiling(peakVO2$ttodead*12)
 peakVO2.Source <- peakVO2
 
