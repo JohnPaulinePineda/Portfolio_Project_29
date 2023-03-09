@@ -714,7 +714,7 @@ dim(PMA_PreModelling_Train)
 |
 | Exploratory data analysis:
 |
-| **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables, based on correlation with survival time, include:
+| **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables, based on trend line correlation with survival time, include:
 |      **[A.1]** <span style="color: #FF0000">peak.vo2</span> variable (numeric)
 |      **[A.2]** <span style="color: #FF0000">interval</span> variable (numeric)
 |      **[A.3]** <span style="color: #FF0000">sodium</span> variable (numeric)
@@ -729,7 +729,7 @@ dim(PMA_PreModelling_Train)
 |      **[B.7]** <span style="color: #FF0000">surgery.cabg</span> variable (factor)
 |      **[B.8]** <span style="color: #FF0000">insulin</span> variable (factor)
 |
-| **[C]** To simplify the subsequent computations, only three numeric variables (which demonstrated the most intuitive trend line with survival time and consistency of distribution) and three factor variables (which demonstrated the lowest Log-Rank Test p-value and sufficient separation in the estimated Kaplan-Meier survival curve) were evaluated during survival modelling which include:
+| **[C]** To simplify the subsequent computations, only three numeric variables (which demonstrated the most intuitive trend line with survival time and consistency of distribution) and three factor variables (which demonstrated the lowest Log-Rank Test p-value and sufficient separation in the estimated Kaplan-Meier survival curves) were evaluated during survival modelling which include:
 |      **[C.1]** <span style="color: #FF0000">peak.vo2</span> variable (numeric)
 |      **[C.2]** <span style="color: #FF0000">bun</span> variable (numeric)
 |      **[C.3]** <span style="color: #FF0000">sodium</span> variable (numeric)
@@ -1167,7 +1167,7 @@ arrange_ggsurvplots(KMPlot_List,
 |
 | **[C]** The CPH model does not contain any hyperparameter.
 |
-| **[D]** The mean split-sample cross-validated CIN based on 5 iterations  are summarized as follows: :
+| **[D]** The mean split-sample cross-validated CIN based on 25 iterations  are summarized as follows: :
 |      **[D.1]** RSF = 0.68637
 |      **[D.2]** CPH = 0.69929
 |      **[D.3]** The range of cross-validated CIN metrics was relatively higher for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
@@ -1276,7 +1276,7 @@ for (i in 1:25) {
 |
 | **[C]** The CPH model does not contain any hyperparameter.
 |
-| **[D]** The average split-sample cross-validated BSC based on 5 iterations are summarized as follows: :
+| **[D]** The average split-sample cross-validated BSC based on 25 iterations are summarized as follows: :
 |      **[D.1]** RSF = 2.07448
 |      **[D.2]** CPH = 1.98999
 |      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
@@ -1388,7 +1388,7 @@ for (i in 1:25) {
 |
 | **[C]** The CPH model does not contain any hyperparameter.
 |
-| **[D]** The average split-sample cross-validated IAE based on 5 iterations are summarized as follows: :
+| **[D]** The average split-sample cross-validated IAE based on 25 iterations are summarized as follows: :
 |      **[D.1]** RSF = 1.76058
 |      **[D.2]** CPH = 1.69852
 |      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
