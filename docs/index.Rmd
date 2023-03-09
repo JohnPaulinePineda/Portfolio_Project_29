@@ -1,7 +1,7 @@
 ---
 title: 'R : Exploring Performance Evaluation Metrics for Survival Prediction'
 author: "John Pauline Pineda"
-date: "March 11, 2023"
+date: "March 10, 2023"
 output: 
   html_document:
     toc: true
@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.width=15, fig.height=10)
 |
 | This document implements a comparison of evaluation metrics for assessing survival model performance using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>.    
 |
-| Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the concordance between the predicted risk score for each observation and the actual survival time, considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions.
+| Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the agreement between the predicted and actual measures for each observation (expressed in survival probability, status or time), while considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions.
 |
 ##  1.1 Sample Data
 |
@@ -1167,10 +1167,10 @@ arrange_ggsurvplots(KMPlot_List,
 |
 | **[C]** The CPH model does not contain any hyperparameter.
 |
-| **[D]** The median split-sample cross-validated CIN based on 5 iterations  are summarized as follows: :
-|      **[D.1]** RSF = 0.63738
-|      **[D.2]** CPH = 0.66629
-|      **[D.3]** The range of cross-validated CIN metrics was relatively higher for the CPH model as compared to RSF model.
+| **[D]** The mean split-sample cross-validated CIN based on 5 iterations  are summarized as follows: :
+|      **[D.1]** RSF = 0.68637
+|      **[D.2]** CPH = 0.69929
+|      **[D.3]** The range of cross-validated CIN metrics was relatively higher for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
 ##################################
@@ -1254,13 +1254,13 @@ for (i in 1:25) {
                                  'Model' = c(rep('CPH', 25), rep('RSF', 25)),
                                  'Metric' = c(rep('CIN', 50))))
 
-(CPH_Model_CIN_CV <- median(SplitValidation_CIN[SplitValidation_CIN$Model=="CPH",1]))
-(RSF_Model_CIN_CV <- median(SplitValidation_CIN[SplitValidation_CIN$Model=="RSF",1]))
+(CPH_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="CPH",1]))
+(RSF_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="RSF",1]))
 
-bwplot(CIN ~ Model | Metric,
+(CIN_Boxplot <- bwplot(CIN ~ Model | Metric,
        data = SplitValidation_CIN,
        xlab = "Survival Model",
-       ylab = "Concordance Index")
+       ylab = "Concordance Index"))
 
 ```
 
@@ -1277,9 +1277,9 @@ bwplot(CIN ~ Model | Metric,
 | **[C]** The CPH model does not contain any hyperparameter.
 |
 | **[D]** The average split-sample cross-validated BSC based on 5 iterations are summarized as follows: :
-|      **[D.1]** RSF = 0.14325
-|      **[D.2]** CPH = 0.13853
-|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
+|      **[D.1]** RSF = 2.07448
+|      **[D.2]** CPH = 1.98999
+|      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
 ```{r section_1.5.2, warning=FALSE, message=FALSE}
 ##################################
@@ -1369,122 +1369,18 @@ for (i in 1:25) {
 (CPH_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="CPH",1]))
 (RSF_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="RSF",1]))
 
-bwplot(BSC ~ Model | Metric,
+(BSC_Boxplot <- bwplot(BSC ~ Model | Metric,
        data = SplitValidation_BSC,
        xlab = "Survival Model",
-       ylab = "Brier Score")
+       ylab = "Brier Score"))
 
 ```
 
-###  1.5.3 Integrated Brier Score (IBSC)
-|
-| [IBSC](https://onlinelibrary.wiley.com/doi/10.1002/sim.1621) is the integrated weighted squared distance between the estimated survival function and the empirical survival function. The inverse probability censoring weighting(IPCW) is used to adjust for censoring.
-|
-| **[A]** The IBSC metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
-|
-| **[B]** The RSF model contains 2 hyperparameters:
-|      **[B.1]** <span style="color: #FF0000">ntree</span> = number of trees held constant at a value of 500.
-|      **[B.2]** <span style="color: #FF0000">nsplit</span> = number of random splits for splitting a variable held constant at a value of 3.
-|
-| **[C]** The CPH model does not contain any hyperparameter.
-|
-| **[D]** The average split-sample cross-validated IBSC based on 5 iterations are summarized as follows: :
-|      **[D.1]** RSF = 0.xxxx
-|      **[D.2]** CPH = 0.xxxx
-|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
-|
-```{r section_1.5.3, warning=FALSE, message=FALSE}
-# ##################################
-# # Creating a local object
-# # for the train set
-# # using a numeric data type
-# # for all variables
-# ##################################
-# MA_IBSC <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead","died","interval","insulin")]
-# 
-# ##################################
-# # Initializing data containers
-# # and random seed
-# ##################################
-# set.seed(88888888)
-# RSF_Model_IBSC = 0
-# CPH_Model_IBSC = 0
-# 
-# for (i in 1:5) {
-#  ##################################
-#  # Formulating the train and test sets
-#  ##################################
-#  MA_IBSC_Index = createFolds(1:nrow(MA_IBSC), 2)
-#  MA_IBSC_Train = MA_IBSC[MA_IBSC_Index[[1]],]
-#  MA_IBSC_Test = MA_IBSC[MA_IBSC_Index[[2]],]
-# 
-#  ##################################
-#  # Formulating the Random Survival Forest model
-#  # and generating model predictions
-#  ##################################
-#  RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
-#                    data = MA_IBSC_Train,
-#                    nsplit = 3,
-#                    ntree = 500)
-#  RSF_Model_PredObject <- predict(RSF_Model, MA_IBSC_Test)
-# 
-#  RSF_Model_Pred <- RSF_Model_PredObject$survival
-# 
-#  ##################################
-#  # Consolidating the ordered unique death times
-#  ##################################
-#  Ordered_Unique_Death_Time = RSF_Model$time.interest
-# 
-#  ##################################
-#  # Formulating the Cox Proportional Hazards model
-#  # and generating model predictions
-#  ##################################
-#  CPH_Model <-  coxph(Surv(ttodead, died)~.,
-#                      data = MA_IBSC_Train,
-#                      x = TRUE)
-#  CPH_Model_Pred = predictSurvProb(CPH_Model,
-#                                   MA_IBSC_Test,
-#                                   Ordered_Unique_Death_Time)
-# 
-#  ##################################
-#  # Calculating the Integrated Brier Scores
-#  ##################################
-#  Median_Index <- median(1:length(Ordered_Unique_Death_Time))
-#  Survival_Object <- Surv(MA_IBSC_Test$ttodead, MA_IBSC_Test$died)
-# 
-#  RSF_Model_IBSC[i] <- IBS(Survival_Object,
-#                           sp_matrix = RSF_Model_Pred,
-#                           Ordered_Unique_Death_Time)
-# 
-#  CPH_Model_IBSC[i] <- IBS(Survival_Object,
-#                           sp_matrix = CPH_Model_Pred,
-#                           Ordered_Unique_Death_Time)
-# 
-# }
-# 
-# ##################################
-# # Consolidating the repeated
-# # split-sample validated Integrated Brier Scores
-# ##################################
-# (SplitValidation_IBSC = data.frame('IBSC' = c(CPH_Model_IBSC, RSF_Model_IBSC),
-#                                  'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-#                                  'Metric' = c(rep('IBSC', 10))))
-# 
-# (CPH_Model_IBSC_CV <- mean(SplitValidation_IBSC[SplitValidation_IBSC$Model=="CPH",1]))
-# (RSF_Model_IBSC_CV <- mean(SplitValidation_IBSC[SplitValidation_IBSC$Model=="RSF",1]))
-#
-# bwplot(IBSC ~ Model | Metric,
-#        data = SplitValidation_IBSC,
-#        xlab = "Survival Model",
-#        ylab = "Integrated Brier Score")
-
-```
-
-###  1.5.4 Integrated Absolute Error (IAE)
+###  1.5.3 Integrated Absolute Error (IAE)
 |
 | [IAE](https://link.springer.com/article/10.1007/s10985-016-9372-1) is a type of continuous-time approach to continuous-time identification based on least-absolute errors.
 |
-| **[A]** The IBSC metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
+| **[A]** The IAE metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
 |
 | **[B]** The RSF model contains 2 hyperparameters:
 |      **[B.1]** <span style="color: #FF0000">ntree</span> = number of trees held constant at a value of 500.
@@ -1493,11 +1389,11 @@ bwplot(BSC ~ Model | Metric,
 | **[C]** The CPH model does not contain any hyperparameter.
 |
 | **[D]** The average split-sample cross-validated IAE based on 5 iterations are summarized as follows: :
-|      **[D.1]** RSF = 0.xxxx
-|      **[D.2]** CPH = 0.xxxx
-|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
+|      **[D.1]** RSF = 1.76058
+|      **[D.2]** CPH = 1.69852
+|      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
-```{r section_1.5.4, warning=FALSE, message=FALSE}
+```{r section_1.5.3, warning=FALSE, message=FALSE}
 ##################################
 # Creating a local object
 # for the train set
@@ -1588,14 +1484,14 @@ for (i in 1:25) {
 (CPH_Model_IAE_CV <- mean(SplitValidation_IAE[SplitValidation_IAE$Model=="CPH",1]))
 (RSF_Model_IAE_CV <- mean(SplitValidation_IAE[SplitValidation_IAE$Model=="RSF",1]))
 
-bwplot(IAE ~ Model | Metric,
+(IAE_Boxplot <- bwplot(IAE ~ Model | Metric,
        data = SplitValidation_IAE,
        xlab = "Survival Model",
-       ylab = "Integrated Absolute Error")
+       ylab = "Integrated Absolute Error"))
 
 ```
 
-###  1.5.5 Integrated Square Error (ISE)
+###  1.5.4 Integrated Square Error (ISE)
 |
 | [ISE](https://link.springer.com/article/10.1007/s11424-021-9307-0) is a type of continuous-time approach to continuous-time identification based on least-squares errors.
 |
@@ -1608,11 +1504,11 @@ bwplot(IAE ~ Model | Metric,
 | **[C]** The CPH model does not contain any hyperparameter.
 |
 | **[D]** The average split-sample cross-validated IAE based on 25 iterations are summarized as follows: :
-|      **[D.1]** RSF = 0.xxxx
-|      **[D.2]** CPH = 0.xxxx
-|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
+|      **[D.1]** RSF = 0.04191
+|      **[D.2]** CPH = 0.04342
+|      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
-```{r section_1.5.5, warning=FALSE, message=FALSE}
+```{r section_1.5.4, warning=FALSE, message=FALSE}
 ##################################
 # Creating a local object
 # for the train set
@@ -1703,10 +1599,10 @@ for (i in 1:25) {
 (CPH_Model_ISE_CV <- mean(SplitValidation_ISE[SplitValidation_ISE$Model=="CPH",1]))
 (RSF_Model_ISE_CV <- mean(SplitValidation_ISE[SplitValidation_ISE$Model=="RSF",1]))
 
-bwplot(ISE ~ Model | Metric,
+(ISE_Boxplot <- bwplot(ISE ~ Model | Metric,
        data = SplitValidation_ISE,
        xlab = "Survival Model",
-       ylab = "Integrated Square Error")
+       ylab = "Integrated Square Error"))
 
 ```
 
@@ -1714,17 +1610,20 @@ bwplot(ISE ~ Model | Metric,
 |
 | Metric performance comparison:
 |
-| **[A]** Details
-|      **[A.1]** Details : Details (<mark style="background-color: #CCECFF">**Details**</mark> package)
-|             **[A.1.1]** Details = 0.xxxxx
-|             **[A.1.2]** Details = 0.xxxxx
+| **[A]** All performance evaluation metrics for survival prediction showed consistent results in terms of identifying the CPH model as better performing than the RSF model. The conditions with which the usage for each metric will vary, will depend on their intended application and/or current data restrictions. 
+|      **[A.1]** CIN : Concordance Index (<mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) evaluates the survival model's discriminative ability through rank correlation. It is the most commonly used survival model evaluation metric which is a generalization of the Receiver Operating Characteristics (ROC) curve in the case of a complete survival data. While it is an intuitive measure of model discrimination, it diminishes the effect of tied survival data. Updated versions of the metric apply methods to address this data restriction.
+|      **[A.2]** BSC : Brier Score (<mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) evaluates the true survival state of an observation and the predicted survival probability at a given time point. However, it is restricted by the selection of only a specific time point (normally assigned as the median of the observation time). Different selection methods may also have large differences in the evaluation of the model’s prediction effect. There is an updated version of the metric called the Integrated Brier Score which computes the metric for the entire time range, but may be computationally exhaustive.
+|      **[A.3]** IAE | ISE : Integrated Absolute and Square Errors (<mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) evaluates the true and predicted survival functions. However, in practical applications, the mathematical expression of the survival function is usually unknown, which results to existing IAE and ISE metrics to be only used in simulation experiments. There is however the alternative to obtain the approximate expression of the survival function using the non-parametric KM estimation method, if the current analysis allows such leniency in assumptions.
 |
 ```{r section_1.6, warning=FALSE, message=FALSE}
-
-##################################
-# For update
-##################################
-
+################################################################################
+# Consolidating all performance metric results
+################################################################################
+grid.arrange(CIN_Boxplot, 
+             BSC_Boxplot, 
+             IAE_Boxplot,
+             ISE_Boxplot,
+             ncol = 2)
 ```
 
 # **2. References**
