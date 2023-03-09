@@ -1466,6 +1466,9 @@ bwplot(BSC ~ Model | Metric,
 #                                  'Model' = c(rep('CPH', 5), rep('RSF', 5)),
 #                                  'Metric' = c(rep('IBSC', 10))))
 # 
+# (CPH_Model_IBSC_CV <- mean(SplitValidation_IBSC[SplitValidation_IBSC$Model=="CPH",1]))
+# (RSF_Model_IBSC_CV <- mean(SplitValidation_IBSC[SplitValidation_IBSC$Model=="RSF",1]))
+#
 # bwplot(IBSC ~ Model | Metric,
 #        data = SplitValidation_IBSC,
 #        xlab = "Survival Model",
@@ -1578,6 +1581,9 @@ for (i in 1:25) {
                                  'Model' = c(rep('CPH', 25), rep('RSF', 25)),
                                  'Metric' = c(rep('IAE', 50))))
 
+(CPH_Model_IAE_CV <- mean(SplitValidation_IAE[SplitValidation_IAE$Model=="CPH",1]))
+(RSF_Model_IAE_CV <- mean(SplitValidation_IAE[SplitValidation_IAE$Model=="RSF",1]))
+
 bwplot(IAE ~ Model | Metric,
        data = SplitValidation_IAE,
        xlab = "Survival Model",
@@ -1593,10 +1599,100 @@ bwplot(IAE ~ Model | Metric,
 |      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
 |
 ```{r section_1.5.5, warning=FALSE, message=FALSE}
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_ISE <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead",
+                                                       "died",
+                                                       "peak.vo2",
+                                                       "interval",
+                                                       "sodium",
+                                                       "insulin",
+                                                       "diuretic.thiazide",
+                                                       "male")]
 
 ##################################
-# Details
+# Initializing data containers
+# and random seed
 ##################################
+set.seed(88888888)
+RSF_Model_ISE = 0
+CPH_Model_ISE = 0
+
+for (i in 1:25) {
+ ##################################
+ # Formulating the train and test sets
+ ##################################
+ MA_ISE_Index = createFolds(1:nrow(MA_ISE), 2)
+ MA_ISE_Train = MA_ISE[MA_ISE_Index[[1]],]
+ MA_ISE_Test = MA_ISE[MA_ISE_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_ISE_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_ISE_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_ISE_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model,
+                                  MA_ISE_Test,
+                                  Ordered_Unique_Death_Time)
+
+ ##################################
+ # Calculating the Concordance Indices
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_ISE_Test$ttodead, MA_ISE_Test$died)
+
+ RSF_Model_IE     <- IAEISE(Survival_Object,
+                          sp_matrix = RSF_Model_Pred,
+                          Ordered_Unique_Death_Time)
+ 
+ RSF_Model_ISE[i] <- RSF_Model_IE[2]
+
+ CPH_Model_IE     <- IAEISE(Survival_Object,
+                          sp_matrix = CPH_Model_Pred,
+                          Ordered_Unique_Death_Time)
+ 
+ CPH_Model_ISE[i] <- CPH_Model_IE[2]
+
+}
+
+##################################
+# Consolidating the repeated
+# split-sample validated Concordance Indices
+##################################
+(SplitValidation_ISE = data.frame('ISE' = c(CPH_Model_ISE, RSF_Model_ISE),
+                                 'Model' = c(rep('CPH', 25), rep('RSF', 25)),
+                                 'Metric' = c(rep('ISE', 50))))
+
+(CPH_Model_ISE_CV <- mean(SplitValidation_ISE[SplitValidation_ISE$Model=="CPH",1]))
+(RSF_Model_ISE_CV <- mean(SplitValidation_ISE[SplitValidation_ISE$Model=="RSF",1]))
+
+bwplot(ISE ~ Model | Metric,
+       data = SplitValidation_ISE,
+       xlab = "Survival Model",
+       ylab = "Integrated Square Error")
 
 ```
 
