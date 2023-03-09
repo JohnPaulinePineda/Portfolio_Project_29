@@ -1163,8 +1163,8 @@ arrange_ggsurvplots(KMPlot_List,
 | **[C]** The CPH model does not contain any hyperparameter.
 |
 | **[D]** The average split-sample cross-validated CIN based on 5 iterations  are summarized as follows: :
-|      **[D.1]** RSF = 0.63632
-|      **[D.2]** CPH = 0.66787
+|      **[D.1]** RSF = 0.63738
+|      **[D.2]** CPH = 0.66629
 |      **[D.3]** The range of cross-validated CIN metrics was relatively higher for the CPH model as compared to RSF model.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
@@ -1265,9 +1265,9 @@ bwplot(CIN ~ Model | Metric,
 | **[C]** The CPH model does not contain any hyperparameter.
 |
 | **[D]** The average split-sample cross-validated BSC based on 5 iterations are summarized as follows: :
-|      **[D.1]** RSF = 0.12919
-|      **[D.2]** CPH = 0.12982
-|      **[D.3]** The range of cross-validated BSC metrics was relatively comparable for both the RSF and CPH models.
+|      **[D.1]** RSF = 0.14325
+|      **[D.2]** CPH = 0.13853
+|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
 |
 ```{r section_1.5.2, warning=FALSE, message=FALSE}
 ##################################
@@ -1372,7 +1372,7 @@ bwplot(BSC ~ Model | Metric,
 | **[D]** The average split-sample cross-validated IBSC based on 5 iterations are summarized as follows: :
 |      **[D.1]** RSF = 0.xxxx
 |      **[D.2]** CPH = 0.xxxx
-|      **[D.3]** The range of cross-validated BSC metrics was relatively comparable for both the RSF and CPH models.
+|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
 |
 ```{r section_1.5.3, warning=FALSE, message=FALSE}
 # ##################################
