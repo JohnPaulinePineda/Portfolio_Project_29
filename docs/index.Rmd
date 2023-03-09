@@ -69,6 +69,7 @@ library(pec)
 ##################################
 data(peakVO2)
 peakVO2 <- as.data.frame(peakVO2)
+peakVO2$ttodead <- ceiling(peakVO2$ttodead*12)
 peakVO2.Source <- peakVO2
 
 ##################################
@@ -851,7 +852,7 @@ KM_betablok <- survfit(Surv(ttodead, died) ~ betablok,
 KMPlot_betablok <- ggsurvplot(KM_betablok,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -862,7 +863,7 @@ KM_aspirin <- survfit(Surv(ttodead, died) ~ aspirin,
 KMPlot_aspirin <- ggsurvplot(KM_aspirin,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -873,7 +874,7 @@ KM_anti.coag <- survfit(Surv(ttodead, died) ~ anti.coag,
 KMPlot_anti.coag <- ggsurvplot(KM_anti.coag,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -884,7 +885,7 @@ KM_anti.arrhy <- survfit(Surv(ttodead, died) ~ anti.arrhy,
 KMPlot_anti.arrhy <- ggsurvplot(KM_anti.arrhy,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -895,7 +896,7 @@ KM_angioten.II <- survfit(Surv(ttodead, died) ~ angioten.II,
 KMPlot_angioten.II <- ggsurvplot(KM_angioten.II,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -906,7 +907,7 @@ KM_acei <- survfit(Surv(ttodead, died) ~ acei,
 KMPlot_acei <- ggsurvplot(KM_acei,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -917,7 +918,7 @@ KM_diuretic.thiazide <- survfit(Surv(ttodead, died) ~ diuretic.thiazide,
 KMPlot_diuretic.thiazide <- ggsurvplot(KM_diuretic.thiazide,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -928,7 +929,7 @@ KM_diuretic.potassium.spar <- survfit(Surv(ttodead, died) ~ diuretic.potassium.s
 KMPlot_diuretic.potassium.spar <- ggsurvplot(KM_diuretic.potassium.spar,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -939,7 +940,7 @@ KM_diuretic.loop <- survfit(Surv(ttodead, died) ~ diuretic.loop,
 KMPlot_diuretic.loop <- ggsurvplot(KM_diuretic.loop,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -950,7 +951,7 @@ KM_digoxin <- survfit(Surv(ttodead, died) ~ digoxin,
 KMPlot_digoxin <- ggsurvplot(KM_digoxin,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -961,7 +962,7 @@ KM_cad <- survfit(Surv(ttodead, died) ~ cad,
 KMPlot_cad <- ggsurvplot(KM_cad,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -972,7 +973,7 @@ KM_black <- survfit(Surv(ttodead, died) ~ black,
 KMPlot_black <- ggsurvplot(KM_black,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -983,7 +984,7 @@ KM_q.wave.mi <- survfit(Surv(ttodead, died) ~ q.wave.mi,
 KMPlot_q.wave.mi <- ggsurvplot(KM_q.wave.mi,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -994,7 +995,7 @@ KM_nitrates <- survfit(Surv(ttodead, died) ~ nitrates,
 KMPlot_nitrates <- ggsurvplot(KM_nitrates,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1005,7 +1006,7 @@ KM_niddm <- survfit(Surv(ttodead, died) ~ niddm,
 KMPlot_niddm <- ggsurvplot(KM_niddm,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1016,7 +1017,7 @@ KM_male <- survfit(Surv(ttodead, died) ~ male,
 KMPlot_male <- ggsurvplot(KM_male,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1027,7 +1028,7 @@ KM_lipidrx.statin <- survfit(Surv(ttodead, died) ~ lipidrx.statin,
 KMPlot_lipidrx.statin <- ggsurvplot(KM_lipidrx.statin,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1038,7 +1039,7 @@ KM_insulin <- survfit(Surv(ttodead, died) ~ insulin,
 KMPlot_insulin <- ggsurvplot(KM_insulin,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1049,7 +1050,7 @@ KM_vasodilator <- survfit(Surv(ttodead, died) ~ vasodilator,
 KMPlot_vasodilator <- ggsurvplot(KM_vasodilator,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1060,7 +1061,7 @@ KM_surgery.pci <- survfit(Surv(ttodead, died) ~ surgery.pci,
 KMPlot_surgery.pci <- ggsurvplot(KM_surgery.pci,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1071,7 +1072,7 @@ KM_surgery.pacemaker <- survfit(Surv(ttodead, died) ~ surgery.pacemaker,
 KMPlot_surgery.pacemaker <- ggsurvplot(KM_surgery.pacemaker,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1082,7 +1083,7 @@ KM_surgery.cabg <- survfit(Surv(ttodead, died) ~ surgery.cabg,
 KMPlot_surgery.cabg <- ggsurvplot(KM_surgery.cabg,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1093,7 +1094,7 @@ KM_surgery.aicd.implant <- survfit(Surv(ttodead, died) ~ surgery.aicd.implant,
 KMPlot_surgery.aicd.implant <- ggsurvplot(KM_surgery.aicd.implant,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1104,7 +1105,7 @@ KM_smknow <- survfit(Surv(ttodead, died) ~ smknow,
 KMPlot_smknow <- ggsurvplot(KM_smknow,
                             xlab="Survival Time",
                             ylab="Survival Probability",
-                            break.time.by=1,
+                            break.time.by=12,
                             ggtheme=theme_bw(),
                             fontsize=3,
                             pval.size=3,
@@ -1174,7 +1175,14 @@ arrange_ggsurvplots(KMPlot_List,
 # using a numeric data type
 # for all variables
 ##################################
-MA_CIN <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead","died","interval","insulin")]
+MA_CIN <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead",
+                                                       "died",
+                                                       "peak.vo2",
+                                                       "interval",
+                                                       "sodium",
+                                                       "insulin",
+                                                       "diuretic.thiazide",
+                                                       "male")]
 
 ##################################
 # Initializing data containers
@@ -1184,7 +1192,7 @@ set.seed(88888888)
 RSF_Model_CIN = 0
 CPH_Model_CIN = 0
 
-for (i in 1:5) {
+for (i in 1:25) {
  ##################################
  # Formulating the train and test sets
  ##################################
@@ -1239,8 +1247,8 @@ for (i in 1:5) {
 # split-sample validated Concordance Indices
 ##################################
 (SplitValidation_CIN = data.frame('CIN' = c(CPH_Model_CIN, RSF_Model_CIN),
-                                 'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-                                 'Metric' = c(rep('CIN', 10))))
+                                 'Model' = c(rep('CPH', 25), rep('RSF', 25)),
+                                 'Metric' = c(rep('CIN', 50))))
 
 (CPH_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="CPH",1]))
 (RSF_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="RSF",1]))
@@ -1276,7 +1284,14 @@ bwplot(CIN ~ Model | Metric,
 # using a numeric data type
 # for all variables
 ##################################
-MA_BSC <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead","died","interval","insulin")]
+MA_BSC <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead",
+                                                       "died",
+                                                       "peak.vo2",
+                                                       "interval",
+                                                       "sodium",
+                                                       "insulin",
+                                                       "diuretic.thiazide",
+                                                       "male")]
 
 ##################################
 # Initializing data containers
@@ -1286,7 +1301,7 @@ set.seed(88888888)
 RSF_Model_BSC = 0
 CPH_Model_BSC = 0
 
-for (i in 1:5) {
+for (i in 1:25) {
  ##################################
  # Formulating the train and test sets
  ##################################
@@ -1344,8 +1359,8 @@ for (i in 1:5) {
 # split-sample validated Brier Scores
 ##################################
 (SplitValidation_BSC = data.frame('BSC' = c(CPH_Model_BSC, RSF_Model_BSC),
-                                 'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-                                 'Metric' = c(rep('BSC', 10))))
+                                 'Model' = c(rep('CPH', 25), rep('RSF', 25)),
+                                 'Metric' = c(rep('BSC', 50))))
 
 (CPH_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="CPH",1]))
 (RSF_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="RSF",1]))
@@ -1462,14 +1477,111 @@ bwplot(BSC ~ Model | Metric,
 |
 | [IAE](https://link.springer.com/article/10.1007/s10985-016-9372-1) is a type of continuous-time approach to continuous-time identification based on least-absolute errors.
 |
-| **[A]** Details <span style="color: #FF0000">Variable</span> using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package.  
-|      **[A.1]** <span style="color: #FF0000">parameter</span> = details.
+| **[A]** The IBSC metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
+|
+| **[B]** The RSF model contains 2 hyperparameters:
+|      **[B.1]** <span style="color: #FF0000">ntree</span> = number of trees held constant at a value of 500.
+|      **[B.2]** <span style="color: #FF0000">nsplit</span> = number of random splits for splitting a variable held constant at a value of 3.
+|
+| **[C]** The CPH model does not contain any hyperparameter.
+|
+| **[D]** The average split-sample cross-validated IAE based on 5 iterations are summarized as follows: :
+|      **[D.1]** RSF = 0.xxxx
+|      **[D.2]** CPH = 0.xxxx
+|      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the CPH model as compared to RSF model.
 |
 ```{r section_1.5.4, warning=FALSE, message=FALSE}
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_IAE <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead",
+                                                       "died",
+                                                       "peak.vo2",
+                                                       "interval",
+                                                       "sodium",
+                                                       "insulin",
+                                                       "diuretic.thiazide",
+                                                       "male")]
 
 ##################################
-# Details
+# Initializing data containers
+# and random seed
 ##################################
+set.seed(88888888)
+RSF_Model_IAE = 0
+CPH_Model_IAE = 0
+
+for (i in 1:25) {
+ ##################################
+ # Formulating the train and test sets
+ ##################################
+ MA_IAE_Index = createFolds(1:nrow(MA_IAE), 2)
+ MA_IAE_Train = MA_IAE[MA_IAE_Index[[1]],]
+ MA_IAE_Test = MA_IAE[MA_IAE_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_IAE_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_IAE_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_IAE_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model,
+                                  MA_IAE_Test,
+                                  Ordered_Unique_Death_Time)
+
+ ##################################
+ # Calculating the Concordance Indices
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_IAE_Test$ttodead, MA_IAE_Test$died)
+
+ RSF_Model_IE     <- IAEISE(Survival_Object,
+                          sp_matrix = RSF_Model_Pred,
+                          Ordered_Unique_Death_Time)
+ 
+ RSF_Model_IAE[i] <- RSF_Model_IE[1]
+
+ CPH_Model_IE     <- IAEISE(Survival_Object,
+                          sp_matrix = CPH_Model_Pred,
+                          Ordered_Unique_Death_Time)
+ 
+ CPH_Model_IAE[i] <- CPH_Model_IE[1]
+
+}
+
+##################################
+# Consolidating the repeated
+# split-sample validated Concordance Indices
+##################################
+(SplitValidation_IAE = data.frame('IAE' = c(CPH_Model_IAE, RSF_Model_IAE),
+                                 'Model' = c(rep('CPH', 25), rep('RSF', 25)),
+                                 'Metric' = c(rep('IAE', 50))))
+
+bwplot(IAE ~ Model | Metric,
+       data = SplitValidation_IAE,
+       xlab = "Survival Model",
+       ylab = "Integrated Absolute Error")
 
 ```
 
