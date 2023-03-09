@@ -713,16 +713,24 @@ dim(PMA_PreModelling_Train)
 |
 | Exploratory data analysis:
 |
-| **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables include:
+| **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables, based on correlation with survival time, include:
 |      **[A.1]** <span style="color: #FF0000">peak.vo2</span> variable (numeric)
 |      **[A.2]** <span style="color: #FF0000">interval</span> variable (numeric)
 |      **[A.3]** <span style="color: #FF0000">sodium</span> variable (numeric)
 |
-| **[B]** Factor variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables include:
+| **[B]** Factor variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables, based on the Log-Rank Test p-value and estimated Kaplan-Meier survival curve separations, include:
 |      **[B.1]** <span style="color: #FF0000">betablk</span> variable (factor)
 |      **[B.2]** <span style="color: #FF0000">diuretic.thiazide</span> variable (factor)
 |      **[B.3]** <span style="color: #FF0000">digoxin</span> variable (factor)
-|      **[B.4]** <span style="color: #FF0000">insulin</span> variable (factor)
+|      **[B.4]** <span style="color: #FF0000">cad</span> variable (factor)
+|      **[B.5]** <span style="color: #FF0000">diuretic.loop</span> variable (factor)
+|      **[B.6]** <span style="color: #FF0000">male</span> variable (factor)
+|      **[B.7]** <span style="color: #FF0000">surgery.cabg</span> variable (factor)
+|      **[B.8]** <span style="color: #FF0000">insulin</span> variable (factor)
+|
+| **[C]** To simplify the subsequent computations, only a single numeric (which demonstrated the best correlation with survival time and consistency of distribution) and a single factor variable (which demonstrated the lowest Log-Rank Test p-value and sufficient separation in the estimated Kaplan-Meier survival curve) were evaluated during survival modelling which include:
+|      **[C.1]** <span style="color: #FF0000">interval</span> variable (factor)
+|      **[C.2]** <span style="color: #FF0000">insulin</span> variable (factor)
 |
 ```{r section_1.4, warning=FALSE, message=FALSE}
 ##################################
@@ -1160,87 +1168,87 @@ arrange_ggsurvplots(KMPlot_List,
 |      **[D.3]** The range of cross-validated BSC metrics was relatively higher for the RSF model as compared to CPH model.
 |
 ```{r section_1.5.1, warning=FALSE, message=FALSE}
-# ##################################
-# # Creating a local object
-# # for the train set
-# # using a numeric data type
-# # for all variables
-# ##################################
-# MA_CIN <- peakVO2.Source[,!names(peakVO2) %in% c("dilver","nifed")]
-# 
-# ##################################
-# # Initializing data containers
-# # and random seed
-# ##################################
-# set.seed(88888888)
-# RSF_Model_CIN = 0
-# CPH_Model_CIN = 0
-# 
-# for (i in 1:10) {
-#  ##################################
-#  # Formulating the train and test sets
-#  ##################################
-#  MA_CIN_Index = createFolds(1:nrow(MA_CIN), 2)
-#  MA_CIN_Train = MA_CIN[MA_CIN_Index[[1]],]
-#  MA_CIN_Test = MA_CIN[MA_CIN_Index[[2]],]
-# 
-#  ##################################
-#  # Formulating the Random Survival Forest model
-#  # and generating model predictions
-#  ##################################
-#  RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
-#                    data = MA_CIN_Train,
-#                    nsplit = 3,
-#                    ntree = 500)
-#  RSF_Model_PredObject <- predict(RSF_Model, MA_CIN_Test)
-# 
-#  RSF_Model_Pred <- RSF_Model_PredObject$survival
-# 
-#  ##################################
-#  # Consolidating the ordered unique death times
-#  ##################################
-#  Ordered_Unique_Death_Time = RSF_Model$time.interest
-# 
-#  ##################################
-#  # Formulating the Cox Proportional Hazards model
-#  # and generating model predictions
-#  ##################################
-#  CPH_Model <-  coxph(Surv(ttodead, died)~.,
-#                      data = MA_CIN_Train,
-#                      x = TRUE)
-#  CPH_Model_Pred = predictSurvProb(CPH_Model,
-#                                   MA_CIN_Test,
-#                                   Ordered_Unique_Death_Time)
-# 
-#  ##################################
-#  # Calculating the Concordance Indices
-#  ##################################
-#  Median_Index <- median(1:length(Ordered_Unique_Death_Time))
-#  Survival_Object <- Surv(MA_CIN_Test$ttodead, MA_CIN_Test$died)
-# 
-#  RSF_Model_CIN[i] <- Cindex(Survival_Object,
-#                             predicted = RSF_Model_Pred[,Median_Index])
-# 
-#  CPH_Model_CIN[i] <- Cindex(Survival_Object,
-#                             predicted = CPH_Model_Pred[,Median_Index])
-# 
-# }
-# 
-# ##################################
-# # Consolidating the repeated
-# # split-sample validated Concordance Indices
-# ##################################
-# (SplitValidation_CIN = data.frame('CIN' = c(CPH_Model_CIN, RSF_Model_CIN),
-#                                  'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-#                                  'Metric' = c(rep('CIN', 10))))
-# 
-# (CPH_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="CPH",1]))
-# (RSF_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="RSF",1]))
-# 
-# bwplot(CIN ~ Model | Metric,
-#        data = SplitValidation_CIN,
-#        xlab = "Survival Model",
-#        ylab = "Concordance Index")
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_CIN <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead","died","interval","insulin")]
+
+##################################
+# Initializing data containers
+# and random seed
+##################################
+set.seed(88888888)
+RSF_Model_CIN = 0
+CPH_Model_CIN = 0
+
+for (i in 1:10) {
+ ##################################
+ # Formulating the train and test sets
+ ##################################
+ MA_CIN_Index = createFolds(1:nrow(MA_CIN), 2)
+ MA_CIN_Train = MA_CIN[MA_CIN_Index[[1]],]
+ MA_CIN_Test = MA_CIN[MA_CIN_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_CIN_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_CIN_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_CIN_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model,
+                                  MA_CIN_Test,
+                                  Ordered_Unique_Death_Time)
+
+ ##################################
+ # Calculating the Concordance Indices
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_CIN_Test$ttodead, MA_CIN_Test$died)
+
+ RSF_Model_CIN[i] <- Cindex(Survival_Object,
+                            predicted = RSF_Model_Pred[,Median_Index])
+
+ CPH_Model_CIN[i] <- Cindex(Survival_Object,
+                            predicted = CPH_Model_Pred[,Median_Index])
+
+}
+
+##################################
+# Consolidating the repeated
+# split-sample validated Concordance Indices
+##################################
+(SplitValidation_CIN = data.frame('CIN' = c(CPH_Model_CIN, RSF_Model_CIN),
+                                 'Model' = c(rep('CPH', 10), rep('RSF', 10)),
+                                 'Metric' = c(rep('CIN', 20))))
+
+(CPH_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="CPH",1]))
+(RSF_Model_CIN_CV <- mean(SplitValidation_CIN[SplitValidation_CIN$Model=="RSF",1]))
+
+bwplot(CIN ~ Model | Metric,
+       data = SplitValidation_CIN,
+       xlab = "Survival Model",
+       ylab = "Concordance Index")
 
 ```
 
@@ -1262,90 +1270,90 @@ arrange_ggsurvplots(KMPlot_List,
 |      **[D.3]** The range of cross-validated BSC metrics was relatively comparable for both the RSF and CPH models.
 |
 ```{r section_1.5.2, warning=FALSE, message=FALSE}
-# ##################################
-# # Creating a local object
-# # for the train set
-# # using a numeric data type
-# # for all variables
-# ##################################
-# MA_BSC <- peakVO2.Source[,!names(peakVO2) %in% c("dilver","nifed")]
-# 
-# ##################################
-# # Initializing data containers
-# # and random seed
-# ##################################
-# set.seed(88888888)
-# RSF_Model_BSC = 0
-# CPH_Model_BSC = 0
-# 
-# for (i in 1:10) {
-#  ##################################
-#  # Formulating the train and test sets
-#  ##################################
-#  MA_BSC_Index = createFolds(1:nrow(MA_BSC), 2)
-#  MA_BSC_Train = MA_BSC[MA_BSC_Index[[1]],]
-#  MA_BSC_Test = MA_BSC[MA_BSC_Index[[2]],]
-# 
-#  ##################################
-#  # Formulating the Random Survival Forest model
-#  # and generating model predictions
-#  ##################################
-#  RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
-#                    data = MA_BSC_Train,
-#                    nsplit = 3,
-#                    ntree = 500)
-#  RSF_Model_PredObject <- predict(RSF_Model, MA_BSC_Test)
-# 
-#  RSF_Model_Pred <- RSF_Model_PredObject$survival
-# 
-#  ##################################
-#  # Consolidating the ordered unique death times
-#  ##################################
-#  Ordered_Unique_Death_Time = RSF_Model$time.interest
-# 
-#  ##################################
-#  # Formulating the Cox Proportional Hazards model
-#  # and generating model predictions
-#  ##################################
-#  CPH_Model <-  coxph(Surv(ttodead, died)~.,
-#                      data = MA_BSC_Train,
-#                      x = TRUE)
-#  CPH_Model_Pred = predictSurvProb(CPH_Model,
-#                                   MA_BSC_Test,
-#                                   Ordered_Unique_Death_Time)
-# 
-#  ##################################
-#  # Calculating the Brier Scores
-#  ##################################
-#  Median_Index <- median(1:length(Ordered_Unique_Death_Time))
-#  Survival_Object <- Surv(MA_BSC_Test$ttodead, MA_BSC_Test$died)
-#  Median_DeathTime <- median(Ordered_Unique_Death_Time)
-# 
-#  RSF_Model_BSC[i] <- Brier(Survival_Object,
-#                            pre_sp = RSF_Model_Pred[,Median_Index],
-#                            Median_DeathTime)
-# 
-#  CPH_Model_BSC[i] <- Brier(Survival_Object,
-#                            pre_sp = CPH_Model_Pred[,Median_Index],
-#                            Median_DeathTime)
-# 
-# }
-# 
-# ##################################
-# # Consolidating the repeated
-# # split-sample validated Brier Scores
-# ##################################
-# (SplitValidation_BSC = data.frame('BSC' = c(CPH_Model_BSC, RSF_Model_BSC),
-#                                  'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-#                                  'Metric' = c(rep('BSC', 10))))
-# 
-# (CPH_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="CPH",1]))
-# (RSF_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="RSF",1]))
-# 
-# bwplot(BSC ~ Model | Metric,
-#        data = SplitValidation_BSC,
-#        xlab = "Survival Model",
-#        ylab = "Brier Score")
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_BSC <- peakVO2.Source[,names(peakVO2.Source) %in% c("ttodead","died","interval","insulin")]
+
+##################################
+# Initializing data containers
+# and random seed
+##################################
+set.seed(88888888)
+RSF_Model_BSC = 0
+CPH_Model_BSC = 0
+
+for (i in 1:10) {
+ ##################################
+ # Formulating the train and test sets
+ ##################################
+ MA_BSC_Index = createFolds(1:nrow(MA_BSC), 2)
+ MA_BSC_Train = MA_BSC[MA_BSC_Index[[1]],]
+ MA_BSC_Test = MA_BSC[MA_BSC_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_BSC_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_BSC_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_BSC_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model,
+                                  MA_BSC_Test,
+                                  Ordered_Unique_Death_Time)
+
+ ##################################
+ # Calculating the Brier Scores
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_BSC_Test$ttodead, MA_BSC_Test$died)
+ Median_DeathTime <- median(Ordered_Unique_Death_Time)
+
+ RSF_Model_BSC[i] <- Brier(Survival_Object,
+                           pre_sp = RSF_Model_Pred[,Median_Index],
+                           Median_DeathTime)
+
+ CPH_Model_BSC[i] <- Brier(Survival_Object,
+                           pre_sp = CPH_Model_Pred[,Median_Index],
+                           Median_DeathTime)
+
+}
+
+##################################
+# Consolidating the repeated
+# split-sample validated Brier Scores
+##################################
+(SplitValidation_BSC = data.frame('BSC' = c(CPH_Model_BSC, RSF_Model_BSC),
+                                 'Model' = c(rep('CPH', 10), rep('RSF', 10)),
+                                 'Metric' = c(rep('BSC', 20))))
+
+(CPH_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="CPH",1]))
+(RSF_Model_BSC_CV <- mean(SplitValidation_BSC[SplitValidation_BSC$Model=="RSF",1]))
+
+bwplot(BSC ~ Model | Metric,
+       data = SplitValidation_BSC,
+       xlab = "Survival Model",
+       ylab = "Brier Score")
 
 ```
 
@@ -1367,86 +1375,86 @@ arrange_ggsurvplots(KMPlot_List,
 |      **[D.3]** The range of cross-validated BSC metrics was relatively comparable for both the RSF and CPH models.
 |
 ```{r section_1.5.3, warning=FALSE, message=FALSE}
-# ##################################
-# # Creating a local object
-# # for the train set
-# # using a numeric data type
-# # for all variables
-# ##################################
-# MA_IBSC <- peakVO2.Source[,!names(peakVO2) %in% c("dilver","nifed")]
-# 
-# ##################################
-# # Initializing data containers
-# # and random seed
-# ##################################
-# set.seed(88888888)
-# RSF_Model_IBSC = 0
-# CPH_Model_IBSC = 0
-# 
-# for (i in 1:5) {
-#  ##################################
-#  # Formulating the train and test sets 
-#  ##################################
-#  MA_IBSC_Index = createFolds(1:nrow(MA_IBSC), 2)
-#  MA_IBSC_Train = MA_IBSC[MA_IBSC_Index[[1]],]
-#  MA_IBSC_Test = MA_IBSC[MA_IBSC_Index[[2]],]
-# 
-#  ##################################
-#  # Formulating the Random Survival Forest model
-#  # and generating model predictions
-#  ##################################
-#  RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
-#                    data = MA_IBSC_Train,
-#                    nsplit = 3,
-#                    ntree = 500)
-#  RSF_Model_PredObject <- predict(RSF_Model, MA_IBSC_Test)
-# 
-#  RSF_Model_Pred <- RSF_Model_PredObject$survival
-# 
-#  ##################################
-#  # Consolidating the ordered unique death times
-#  ##################################
-#  Ordered_Unique_Death_Time = RSF_Model$time.interest
-# 
-#  ##################################
-#  # Formulating the Cox Proportional Hazards model
-#  # and generating model predictions
-#  ##################################
-#  CPH_Model <-  coxph(Surv(ttodead, died)~.,
-#                      data = MA_IBSC_Train,
-#                      x = TRUE)
-#  CPH_Model_Pred = predictSurvProb(CPH_Model, 
-#                                   MA_IBSC_Test, 
-#                                   Ordered_Unique_Death_Time)
-#  
-#  ##################################
-#  # Calculating the Concordance Indices
-#  ##################################
-#  Median_Index <- median(1:length(Ordered_Unique_Death_Time))
-#  Survival_Object <- Surv(MA_IBSC_Test$ttodead, MA_IBSC_Test$died)
-# 
-#  RSF_Model_IBSC[i] <- IBS(Survival_Object,
-#                           sp_matrix = RSF_Model_Pred,
-#                           Ordered_Unique_Death_Time)
-# 
-#  CPH_Model_IBSC[i] <- IBS(Survival_Object,
-#                           sp_matrix = CPH_Model_Pred,
-#                           Ordered_Unique_Death_Time)
-# 
-# }
-# 
-# ##################################
-# # Consolidating the repeated 
-# # split-sample validated Concordance Indices
-# ##################################
-# (SplitValidation_IBSC = data.frame('IBSC' = c(CPH_Model_IBSC, RSF_Model_IBSC),
-#                                  'Model' = c(rep('CPH', 5), rep('RSF', 5)),
-#                                  'Metric' = c(rep('IBSC', 10))))
-# 
-# bwplot(IBSC ~ Model | Metric,  
-#        data = SplitValidation_IBSC,
-#        xlab = "Survival Model", 
-#        ylab = "Integrated Brier Score")
+##################################
+# Creating a local object
+# for the train set
+# using a numeric data type
+# for all variables
+##################################
+MA_IBSC <- peakVO2.Source[,!names(peakVO2) %in% c("dilver","nifed")]
+
+##################################
+# Initializing data containers
+# and random seed
+##################################
+set.seed(88888888)
+RSF_Model_IBSC = 0
+CPH_Model_IBSC = 0
+
+for (i in 1:5) {
+ ##################################
+ # Formulating the train and test sets
+ ##################################
+ MA_IBSC_Index = createFolds(1:nrow(MA_IBSC), 2)
+ MA_IBSC_Train = MA_IBSC[MA_IBSC_Index[[1]],]
+ MA_IBSC_Test = MA_IBSC[MA_IBSC_Index[[2]],]
+
+ ##################################
+ # Formulating the Random Survival Forest model
+ # and generating model predictions
+ ##################################
+ RSF_Model <-  rfsrc(Surv(ttodead, died)~.,
+                   data = MA_IBSC_Train,
+                   nsplit = 3,
+                   ntree = 500)
+ RSF_Model_PredObject <- predict(RSF_Model, MA_IBSC_Test)
+
+ RSF_Model_Pred <- RSF_Model_PredObject$survival
+
+ ##################################
+ # Consolidating the ordered unique death times
+ ##################################
+ Ordered_Unique_Death_Time = RSF_Model$time.interest
+
+ ##################################
+ # Formulating the Cox Proportional Hazards model
+ # and generating model predictions
+ ##################################
+ CPH_Model <-  coxph(Surv(ttodead, died)~.,
+                     data = MA_IBSC_Train,
+                     x = TRUE)
+ CPH_Model_Pred = predictSurvProb(CPH_Model,
+                                  MA_IBSC_Test,
+                                  Ordered_Unique_Death_Time)
+
+ ##################################
+ # Calculating the Concordance Indices
+ ##################################
+ Median_Index <- median(1:length(Ordered_Unique_Death_Time))
+ Survival_Object <- Surv(MA_IBSC_Test$ttodead, MA_IBSC_Test$died)
+
+ RSF_Model_IBSC[i] <- IBS(Survival_Object,
+                          sp_matrix = RSF_Model_Pred,
+                          Ordered_Unique_Death_Time)
+
+ CPH_Model_IBSC[i] <- IBS(Survival_Object,
+                          sp_matrix = CPH_Model_Pred,
+                          Ordered_Unique_Death_Time)
+
+}
+
+##################################
+# Consolidating the repeated
+# split-sample validated Concordance Indices
+##################################
+(SplitValidation_IBSC = data.frame('IBSC' = c(CPH_Model_IBSC, RSF_Model_IBSC),
+                                 'Model' = c(rep('CPH', 10), rep('RSF', 10)),
+                                 'Metric' = c(rep('IBSC', 20))))
+
+bwplot(IBSC ~ Model | Metric,
+       data = SplitValidation_IBSC,
+       xlab = "Survival Model",
+       ylab = "Integrated Brier Score")
 
 ```
 

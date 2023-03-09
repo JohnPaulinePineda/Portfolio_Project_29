@@ -3409,7 +3409,7 @@ Exploratory data analysis:<br />
 <strong>[A]</strong> Numeric variables which demonstrated differential
 relationships with the <span style="color: #FF0000">ttodead</span> and
 <span style="color: #FF0000">died</span> survival time and event status
-variables include:<br />
+variables, based on correlation with survival time, include:<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">peak.vo2</span>
 variable (numeric)<br />
      <strong>[A.2]</strong> <span style="color: #FF0000">interval</span>
@@ -3420,13 +3420,31 @@ variable (numeric)<br />
 <strong>[B]</strong> Factor variables which demonstrated differential
 relationships with the <span style="color: #FF0000">ttodead</span> and
 <span style="color: #FF0000">died</span> survival time and event status
-variables include:<br />
+variables, based on the Log-Rank Test p-value and estimated Kaplan-Meier
+survival curve separations, include:<br />
      <strong>[B.1]</strong> <span style="color: #FF0000">betablk</span>
 variable (factor)<br />
      <strong>[B.2]</strong> <span style="color: #FF0000">diuretic.thiazide</span> variable (factor)<br />
      <strong>[B.3]</strong> <span style="color: #FF0000">digoxin</span>
 variable (factor)<br />
-     <strong>[B.4]</strong> <span style="color: #FF0000">insulin</span>
+     <strong>[B.4]</strong> <span style="color: #FF0000">cad</span>
+variable (factor)<br />
+     <strong>[B.5]</strong> <span style="color: #FF0000">diuretic.loop</span> variable (factor)<br />
+     <strong>[B.6]</strong> <span style="color: #FF0000">male</span>
+variable (factor)<br />
+     <strong>[B.7]</strong> <span style="color: #FF0000">surgery.cabg</span> variable (factor)<br />
+     <strong>[B.8]</strong> <span style="color: #FF0000">insulin</span>
+variable (factor)<br />
+<br />
+<strong>[C]</strong> To simplify the subsequent computations, only a
+single numeric (which demonstrated the best correlation with survival
+time and consistency of distribution) and a single factor variable
+(which demonstrated the lowest Log-Rank Test p-value and sufficient
+separation in the estimated Kaplan-Meier survival curve) were evaluated
+during survival modelling which include:<br />
+     <strong>[C.1]</strong> <span style="color: #FF0000">interval</span>
+variable (factor)<br />
+     <strong>[C.2]</strong> <span style="color: #FF0000">insulin</span>
 variable (factor)<br />
 </div>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
@@ -3913,87 +3931,109 @@ on 5 iterations are summarized as follows: :<br />
      <strong>[D.3]</strong> The range of cross-validated BSC metrics was
 relatively higher for the RSF model as compared to CPH model.<br />
 </div>
-<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
-<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
-<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # using a numeric data type</span></span>
-<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # for all variables</span></span>
-<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MA_CIN &lt;- peakVO2.Source[,!names(peakVO2) %in% c(&quot;dilver&quot;,&quot;nifed&quot;)]</span></span>
-<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Initializing data containers</span></span>
-<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # and random seed</span></span>
-<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(88888888)</span></span>
-<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model_CIN = 0</span></span>
-<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPH_Model_CIN = 0</span></span>
-<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:10) {</span></span>
-<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the train and test sets</span></span>
-<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_CIN_Index = createFolds(1:nrow(MA_CIN), 2)</span></span>
-<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_CIN_Train = MA_CIN[MA_CIN_Index[[1]],]</span></span>
-<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_CIN_Test = MA_CIN[MA_CIN_Index[[2]],]</span></span>
-<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Random Survival Forest model</span></span>
-<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~.,</span></span>
-<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                    data = MA_CIN_Train,</span></span>
-<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                    nsplit = 3,</span></span>
-<span id="cb76-32"><a href="#cb76-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ntree = 500)</span></span>
-<span id="cb76-33"><a href="#cb76-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_PredObject &lt;- predict(RSF_Model, MA_CIN_Test)</span></span>
-<span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-35"><a href="#cb76-35" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_Pred &lt;- RSF_Model_PredObject$survival</span></span>
-<span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Consolidating the ordered unique death times</span></span>
-<span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a><span class="co">#  Ordered_Unique_Death_Time = RSF_Model$time.interest</span></span>
-<span id="cb76-41"><a href="#cb76-41" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-42"><a href="#cb76-42" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Cox Proportional Hazards model</span></span>
-<span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model &lt;-  coxph(Surv(ttodead, died)~.,</span></span>
-<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                      data = MA_CIN_Train,</span></span>
-<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                      x = TRUE)</span></span>
-<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_Pred = predictSurvProb(CPH_Model,</span></span>
-<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   MA_CIN_Test,</span></span>
-<span id="cb76-51"><a href="#cb76-51" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   Ordered_Unique_Death_Time)</span></span>
-<span id="cb76-52"><a href="#cb76-52" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-53"><a href="#cb76-53" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-54"><a href="#cb76-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Calculating the Concordance Indices</span></span>
-<span id="cb76-55"><a href="#cb76-55" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb76-56"><a href="#cb76-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_Index &lt;- median(1:length(Ordered_Unique_Death_Time))</span></span>
-<span id="cb76-57"><a href="#cb76-57" aria-hidden="true" tabindex="-1"></a><span class="co">#  Survival_Object &lt;- Surv(MA_CIN_Test$ttodead, MA_CIN_Test$died)</span></span>
-<span id="cb76-58"><a href="#cb76-58" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-59"><a href="#cb76-59" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_CIN[i] &lt;- Cindex(Survival_Object,</span></span>
-<span id="cb76-60"><a href="#cb76-60" aria-hidden="true" tabindex="-1"></a><span class="co">#                             predicted = RSF_Model_Pred[,Median_Index])</span></span>
-<span id="cb76-61"><a href="#cb76-61" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-62"><a href="#cb76-62" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_CIN[i] &lt;- Cindex(Survival_Object,</span></span>
-<span id="cb76-63"><a href="#cb76-63" aria-hidden="true" tabindex="-1"></a><span class="co">#                             predicted = CPH_Model_Pred[,Median_Index])</span></span>
-<span id="cb76-64"><a href="#cb76-64" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-65"><a href="#cb76-65" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb76-66"><a href="#cb76-66" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-67"><a href="#cb76-67" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-68"><a href="#cb76-68" aria-hidden="true" tabindex="-1"></a><span class="co"># # Consolidating the repeated</span></span>
-<span id="cb76-69"><a href="#cb76-69" aria-hidden="true" tabindex="-1"></a><span class="co"># # split-sample validated Concordance Indices</span></span>
-<span id="cb76-70"><a href="#cb76-70" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb76-71"><a href="#cb76-71" aria-hidden="true" tabindex="-1"></a><span class="co"># (SplitValidation_CIN = data.frame(&#39;CIN&#39; = c(CPH_Model_CIN, RSF_Model_CIN),</span></span>
-<span id="cb76-72"><a href="#cb76-72" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Model&#39; = c(rep(&#39;CPH&#39;, 5), rep(&#39;RSF&#39;, 5)),</span></span>
-<span id="cb76-73"><a href="#cb76-73" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Metric&#39; = c(rep(&#39;CIN&#39;, 10))))</span></span>
-<span id="cb76-74"><a href="#cb76-74" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-75"><a href="#cb76-75" aria-hidden="true" tabindex="-1"></a><span class="co"># (CPH_Model_CIN_CV &lt;- mean(SplitValidation_CIN[SplitValidation_CIN$Model==&quot;CPH&quot;,1]))</span></span>
-<span id="cb76-76"><a href="#cb76-76" aria-hidden="true" tabindex="-1"></a><span class="co"># (RSF_Model_CIN_CV &lt;- mean(SplitValidation_CIN[SplitValidation_CIN$Model==&quot;RSF&quot;,1]))</span></span>
-<span id="cb76-77"><a href="#cb76-77" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb76-78"><a href="#cb76-78" aria-hidden="true" tabindex="-1"></a><span class="co"># bwplot(CIN ~ Model | Metric,</span></span>
-<span id="cb76-79"><a href="#cb76-79" aria-hidden="true" tabindex="-1"></a><span class="co">#        data = SplitValidation_CIN,</span></span>
-<span id="cb76-80"><a href="#cb76-80" aria-hidden="true" tabindex="-1"></a><span class="co">#        xlab = &quot;Survival Model&quot;,</span></span>
-<span id="cb76-81"><a href="#cb76-81" aria-hidden="true" tabindex="-1"></a><span class="co">#        ylab = &quot;Concordance Index&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating a local object</span></span>
+<span id="cb76-3"><a href="#cb76-3" aria-hidden="true" tabindex="-1"></a><span class="co"># for the train set</span></span>
+<span id="cb76-4"><a href="#cb76-4" aria-hidden="true" tabindex="-1"></a><span class="co"># using a numeric data type</span></span>
+<span id="cb76-5"><a href="#cb76-5" aria-hidden="true" tabindex="-1"></a><span class="co"># for all variables</span></span>
+<span id="cb76-6"><a href="#cb76-6" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-7"><a href="#cb76-7" aria-hidden="true" tabindex="-1"></a>MA_CIN <span class="ot">&lt;-</span> peakVO2.Source[,<span class="fu">names</span>(peakVO2.Source) <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;ttodead&quot;</span>,<span class="st">&quot;died&quot;</span>,<span class="st">&quot;interval&quot;</span>,<span class="st">&quot;insulin&quot;</span>)]</span>
+<span id="cb76-8"><a href="#cb76-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-9"><a href="#cb76-9" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-10"><a href="#cb76-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Initializing data containers</span></span>
+<span id="cb76-11"><a href="#cb76-11" aria-hidden="true" tabindex="-1"></a><span class="co"># and random seed</span></span>
+<span id="cb76-12"><a href="#cb76-12" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-13"><a href="#cb76-13" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">88888888</span>)</span>
+<span id="cb76-14"><a href="#cb76-14" aria-hidden="true" tabindex="-1"></a>RSF_Model_CIN <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb76-15"><a href="#cb76-15" aria-hidden="true" tabindex="-1"></a>CPH_Model_CIN <span class="ot">=</span> <span class="dv">0</span></span>
+<span id="cb76-16"><a href="#cb76-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-17"><a href="#cb76-17" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>) {</span>
+<span id="cb76-18"><a href="#cb76-18" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-19"><a href="#cb76-19" aria-hidden="true" tabindex="-1"></a> <span class="co"># Formulating the train and test sets</span></span>
+<span id="cb76-20"><a href="#cb76-20" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-21"><a href="#cb76-21" aria-hidden="true" tabindex="-1"></a> MA_CIN_Index <span class="ot">=</span> <span class="fu">createFolds</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">nrow</span>(MA_CIN), <span class="dv">2</span>)</span>
+<span id="cb76-22"><a href="#cb76-22" aria-hidden="true" tabindex="-1"></a> MA_CIN_Train <span class="ot">=</span> MA_CIN[MA_CIN_Index[[<span class="dv">1</span>]],]</span>
+<span id="cb76-23"><a href="#cb76-23" aria-hidden="true" tabindex="-1"></a> MA_CIN_Test <span class="ot">=</span> MA_CIN[MA_CIN_Index[[<span class="dv">2</span>]],]</span>
+<span id="cb76-24"><a href="#cb76-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-25"><a href="#cb76-25" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-26"><a href="#cb76-26" aria-hidden="true" tabindex="-1"></a> <span class="co"># Formulating the Random Survival Forest model</span></span>
+<span id="cb76-27"><a href="#cb76-27" aria-hidden="true" tabindex="-1"></a> <span class="co"># and generating model predictions</span></span>
+<span id="cb76-28"><a href="#cb76-28" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-29"><a href="#cb76-29" aria-hidden="true" tabindex="-1"></a> RSF_Model <span class="ot">&lt;-</span>  <span class="fu">rfsrc</span>(<span class="fu">Surv</span>(ttodead, died)<span class="sc">~</span>.,</span>
+<span id="cb76-30"><a href="#cb76-30" aria-hidden="true" tabindex="-1"></a>                   <span class="at">data =</span> MA_CIN_Train,</span>
+<span id="cb76-31"><a href="#cb76-31" aria-hidden="true" tabindex="-1"></a>                   <span class="at">nsplit =</span> <span class="dv">3</span>,</span>
+<span id="cb76-32"><a href="#cb76-32" aria-hidden="true" tabindex="-1"></a>                   <span class="at">ntree =</span> <span class="dv">500</span>)</span>
+<span id="cb76-33"><a href="#cb76-33" aria-hidden="true" tabindex="-1"></a> RSF_Model_PredObject <span class="ot">&lt;-</span> <span class="fu">predict</span>(RSF_Model, MA_CIN_Test)</span>
+<span id="cb76-34"><a href="#cb76-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-35"><a href="#cb76-35" aria-hidden="true" tabindex="-1"></a> RSF_Model_Pred <span class="ot">&lt;-</span> RSF_Model_PredObject<span class="sc">$</span>survival</span>
+<span id="cb76-36"><a href="#cb76-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-37"><a href="#cb76-37" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-38"><a href="#cb76-38" aria-hidden="true" tabindex="-1"></a> <span class="co"># Consolidating the ordered unique death times</span></span>
+<span id="cb76-39"><a href="#cb76-39" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-40"><a href="#cb76-40" aria-hidden="true" tabindex="-1"></a> Ordered_Unique_Death_Time <span class="ot">=</span> RSF_Model<span class="sc">$</span>time.interest</span>
+<span id="cb76-41"><a href="#cb76-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-42"><a href="#cb76-42" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-43"><a href="#cb76-43" aria-hidden="true" tabindex="-1"></a> <span class="co"># Formulating the Cox Proportional Hazards model</span></span>
+<span id="cb76-44"><a href="#cb76-44" aria-hidden="true" tabindex="-1"></a> <span class="co"># and generating model predictions</span></span>
+<span id="cb76-45"><a href="#cb76-45" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-46"><a href="#cb76-46" aria-hidden="true" tabindex="-1"></a> CPH_Model <span class="ot">&lt;-</span>  <span class="fu">coxph</span>(<span class="fu">Surv</span>(ttodead, died)<span class="sc">~</span>.,</span>
+<span id="cb76-47"><a href="#cb76-47" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> MA_CIN_Train,</span>
+<span id="cb76-48"><a href="#cb76-48" aria-hidden="true" tabindex="-1"></a>                     <span class="at">x =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb76-49"><a href="#cb76-49" aria-hidden="true" tabindex="-1"></a> CPH_Model_Pred <span class="ot">=</span> <span class="fu">predictSurvProb</span>(CPH_Model,</span>
+<span id="cb76-50"><a href="#cb76-50" aria-hidden="true" tabindex="-1"></a>                                  MA_CIN_Test,</span>
+<span id="cb76-51"><a href="#cb76-51" aria-hidden="true" tabindex="-1"></a>                                  Ordered_Unique_Death_Time)</span>
+<span id="cb76-52"><a href="#cb76-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-53"><a href="#cb76-53" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-54"><a href="#cb76-54" aria-hidden="true" tabindex="-1"></a> <span class="co"># Calculating the Concordance Indices</span></span>
+<span id="cb76-55"><a href="#cb76-55" aria-hidden="true" tabindex="-1"></a> <span class="do">##################################</span></span>
+<span id="cb76-56"><a href="#cb76-56" aria-hidden="true" tabindex="-1"></a> Median_Index <span class="ot">&lt;-</span> <span class="fu">median</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(Ordered_Unique_Death_Time))</span>
+<span id="cb76-57"><a href="#cb76-57" aria-hidden="true" tabindex="-1"></a> Survival_Object <span class="ot">&lt;-</span> <span class="fu">Surv</span>(MA_CIN_Test<span class="sc">$</span>ttodead, MA_CIN_Test<span class="sc">$</span>died)</span>
+<span id="cb76-58"><a href="#cb76-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-59"><a href="#cb76-59" aria-hidden="true" tabindex="-1"></a> RSF_Model_CIN[i] <span class="ot">&lt;-</span> <span class="fu">Cindex</span>(Survival_Object,</span>
+<span id="cb76-60"><a href="#cb76-60" aria-hidden="true" tabindex="-1"></a>                            <span class="at">predicted =</span> RSF_Model_Pred[,Median_Index])</span>
+<span id="cb76-61"><a href="#cb76-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-62"><a href="#cb76-62" aria-hidden="true" tabindex="-1"></a> CPH_Model_CIN[i] <span class="ot">&lt;-</span> <span class="fu">Cindex</span>(Survival_Object,</span>
+<span id="cb76-63"><a href="#cb76-63" aria-hidden="true" tabindex="-1"></a>                            <span class="at">predicted =</span> CPH_Model_Pred[,Median_Index])</span>
+<span id="cb76-64"><a href="#cb76-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-65"><a href="#cb76-65" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb76-66"><a href="#cb76-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb76-67"><a href="#cb76-67" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-68"><a href="#cb76-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Consolidating the repeated</span></span>
+<span id="cb76-69"><a href="#cb76-69" aria-hidden="true" tabindex="-1"></a><span class="co"># split-sample validated Concordance Indices</span></span>
+<span id="cb76-70"><a href="#cb76-70" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb76-71"><a href="#cb76-71" aria-hidden="true" tabindex="-1"></a>(<span class="at">SplitValidation_CIN =</span> <span class="fu">data.frame</span>(<span class="st">&#39;CIN&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(CPH_Model_CIN, RSF_Model_CIN),</span>
+<span id="cb76-72"><a href="#cb76-72" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">&#39;Model&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&#39;CPH&#39;</span>, <span class="dv">10</span>), <span class="fu">rep</span>(<span class="st">&#39;RSF&#39;</span>, <span class="dv">10</span>)),</span>
+<span id="cb76-73"><a href="#cb76-73" aria-hidden="true" tabindex="-1"></a>                                 <span class="st">&#39;Metric&#39;</span> <span class="ot">=</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">&#39;CIN&#39;</span>, <span class="dv">20</span>))))</span></code></pre></div>
+<pre><code>##         CIN Model Metric
+## 1  0.665675   CPH    CIN
+## 2  0.683463   CPH    CIN
+## 3  0.661729   CPH    CIN
+## 4  0.664220   CPH    CIN
+## 5  0.656403   CPH    CIN
+## 6  0.667138   CPH    CIN
+## 7  0.666908   CPH    CIN
+## 8  0.659050   CPH    CIN
+## 9  0.677827   CPH    CIN
+## 10 0.676384   CPH    CIN
+## 11 0.624627   RSF    CIN
+## 12 0.646819   RSF    CIN
+## 13 0.636795   RSF    CIN
+## 14 0.647001   RSF    CIN
+## 15 0.630812   RSF    CIN
+## 16 0.640909   RSF    CIN
+## 17 0.640077   RSF    CIN
+## 18 0.629012   RSF    CIN
+## 19 0.638984   RSF    CIN
+## 20 0.628216   RSF    CIN</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>(CPH_Model_CIN_CV <span class="ot">&lt;-</span> <span class="fu">mean</span>(SplitValidation_CIN[SplitValidation_CIN<span class="sc">$</span>Model<span class="sc">==</span><span class="st">&quot;CPH&quot;</span>,<span class="dv">1</span>]))</span></code></pre></div>
+<pre><code>## [1] 0.6678797</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>(RSF_Model_CIN_CV <span class="ot">&lt;-</span> <span class="fu">mean</span>(SplitValidation_CIN[SplitValidation_CIN<span class="sc">$</span>Model<span class="sc">==</span><span class="st">&quot;RSF&quot;</span>,<span class="dv">1</span>]))</span></code></pre></div>
+<pre><code>## [1] 0.6363252</code></pre>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bwplot</span>(CIN <span class="sc">~</span> Model <span class="sc">|</span> Metric,</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>       <span class="at">data =</span> SplitValidation_CIN,</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>       <span class="at">xlab =</span> <span class="st">&quot;Survival Model&quot;</span>,</span>
+<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">ylab =</span> <span class="st">&quot;Concordance Index&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAC0AAAAeACAMAAABq2SaSAAABWVBMVEUAAAAAAC4AADoAAFIAAGYAMy4AM1IAM3MAOjoAOmYAOpAAXJEAZmYAZrYAgP86AAA6My46OgA6Ojo6OmY6XFI6XJE6ZmY6ZpA6ZrY6gK86kJA6kLY6kNtmAABmADpmMwBmMy5mOgBmOjpmOmZmZgBmZjpmZmZmZpBmgJFmkJBmkLZmkNtmo8xmtrZmtttmtv+QMwCQOgCQOjqQZjqQZmaQgFKQkGaQkJCQkLaQo6+QtpCQtraQttuQxcyQ2/+2XAC2XC62ZgC2Zjq2gFK2kDq2kGa2tma2tpC2tra2ttu2xcy225C227a229u22/+25cy2///bgC7bkDrbkGbbkJDbo1Lbo3PbtmbbtpDbtrbbttvbxZHbxa/bxczb25Db27bb29vb2//b5czb/7bb////o1L/tmb/tpD/xXP/xa//25D/27b/29v/5ZH/5a//5cz//7b//9v///9AMNh1AAAACXBIWXMAAB2HAAAdhwGP5fFlAAAgAElEQVR4nOzd3XNd13nY4V1ETUV1qBNKzYgeCamlTKmMkpLl0E3SEcsUjDKm4lpx0CSU0rohMzQmBRUb5/z/Fz1fAA5AiAdr+11fB89zYWNvQeS25734zZ611xpmAADAtQ21HwAAAHoioAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEAIIGABgCABAIaAAASCGgAAEggoAEA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" width="1440" /></p>
 </div>
 <div id="brier-score-bsc" class="section level3">
 <h3>1.5.2 Brier Score (BSC)</h3>
@@ -4030,90 +4070,90 @@ on 5 iterations are summarized as follows: :<br />
      <strong>[D.3]</strong> The range of cross-validated BSC metrics was
 relatively comparable for both the RSF and CPH models.<br />
 </div>
-<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
-<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
-<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # using a numeric data type</span></span>
-<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # for all variables</span></span>
-<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MA_BSC &lt;- peakVO2.Source[,!names(peakVO2) %in% c(&quot;dilver&quot;,&quot;nifed&quot;)]</span></span>
-<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-10"><a href="#cb77-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Initializing data containers</span></span>
-<span id="cb77-11"><a href="#cb77-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # and random seed</span></span>
-<span id="cb77-12"><a href="#cb77-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-13"><a href="#cb77-13" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(88888888)</span></span>
-<span id="cb77-14"><a href="#cb77-14" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model_BSC = 0</span></span>
-<span id="cb77-15"><a href="#cb77-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPH_Model_BSC = 0</span></span>
-<span id="cb77-16"><a href="#cb77-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-17"><a href="#cb77-17" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:10) {</span></span>
-<span id="cb77-18"><a href="#cb77-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-19"><a href="#cb77-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the train and test sets</span></span>
-<span id="cb77-20"><a href="#cb77-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-21"><a href="#cb77-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Index = createFolds(1:nrow(MA_BSC), 2)</span></span>
-<span id="cb77-22"><a href="#cb77-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Train = MA_BSC[MA_BSC_Index[[1]],]</span></span>
-<span id="cb77-23"><a href="#cb77-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Test = MA_BSC[MA_BSC_Index[[2]],]</span></span>
-<span id="cb77-24"><a href="#cb77-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-25"><a href="#cb77-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-26"><a href="#cb77-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Random Survival Forest model</span></span>
-<span id="cb77-27"><a href="#cb77-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb77-28"><a href="#cb77-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-29"><a href="#cb77-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~.,</span></span>
-<span id="cb77-30"><a href="#cb77-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                    data = MA_BSC_Train,</span></span>
-<span id="cb77-31"><a href="#cb77-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                    nsplit = 3,</span></span>
-<span id="cb77-32"><a href="#cb77-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ntree = 500)</span></span>
-<span id="cb77-33"><a href="#cb77-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_PredObject &lt;- predict(RSF_Model, MA_BSC_Test)</span></span>
-<span id="cb77-34"><a href="#cb77-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-35"><a href="#cb77-35" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_Pred &lt;- RSF_Model_PredObject$survival</span></span>
-<span id="cb77-36"><a href="#cb77-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-37"><a href="#cb77-37" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-38"><a href="#cb77-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Consolidating the ordered unique death times</span></span>
-<span id="cb77-39"><a href="#cb77-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-40"><a href="#cb77-40" aria-hidden="true" tabindex="-1"></a><span class="co">#  Ordered_Unique_Death_Time = RSF_Model$time.interest</span></span>
-<span id="cb77-41"><a href="#cb77-41" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-42"><a href="#cb77-42" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-43"><a href="#cb77-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Cox Proportional Hazards model</span></span>
-<span id="cb77-44"><a href="#cb77-44" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb77-45"><a href="#cb77-45" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-46"><a href="#cb77-46" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model &lt;-  coxph(Surv(ttodead, died)~.,</span></span>
-<span id="cb77-47"><a href="#cb77-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                      data = MA_BSC_Train,</span></span>
-<span id="cb77-48"><a href="#cb77-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                      x = TRUE)</span></span>
-<span id="cb77-49"><a href="#cb77-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_Pred = predictSurvProb(CPH_Model,</span></span>
-<span id="cb77-50"><a href="#cb77-50" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   MA_BSC_Test,</span></span>
-<span id="cb77-51"><a href="#cb77-51" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   Ordered_Unique_Death_Time)</span></span>
-<span id="cb77-52"><a href="#cb77-52" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-53"><a href="#cb77-53" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-54"><a href="#cb77-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Calculating the Brier Scores</span></span>
-<span id="cb77-55"><a href="#cb77-55" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb77-56"><a href="#cb77-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_Index &lt;- median(1:length(Ordered_Unique_Death_Time))</span></span>
-<span id="cb77-57"><a href="#cb77-57" aria-hidden="true" tabindex="-1"></a><span class="co">#  Survival_Object &lt;- Surv(MA_BSC_Test$ttodead, MA_BSC_Test$died)</span></span>
-<span id="cb77-58"><a href="#cb77-58" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_DeathTime &lt;- median(Ordered_Unique_Death_Time)</span></span>
-<span id="cb77-59"><a href="#cb77-59" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-60"><a href="#cb77-60" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_BSC[i] &lt;- Brier(Survival_Object,</span></span>
-<span id="cb77-61"><a href="#cb77-61" aria-hidden="true" tabindex="-1"></a><span class="co">#                            pre_sp = RSF_Model_Pred[,Median_Index],</span></span>
-<span id="cb77-62"><a href="#cb77-62" aria-hidden="true" tabindex="-1"></a><span class="co">#                            Median_DeathTime)</span></span>
-<span id="cb77-63"><a href="#cb77-63" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-64"><a href="#cb77-64" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_BSC[i] &lt;- Brier(Survival_Object,</span></span>
-<span id="cb77-65"><a href="#cb77-65" aria-hidden="true" tabindex="-1"></a><span class="co">#                            pre_sp = CPH_Model_Pred[,Median_Index],</span></span>
-<span id="cb77-66"><a href="#cb77-66" aria-hidden="true" tabindex="-1"></a><span class="co">#                            Median_DeathTime)</span></span>
-<span id="cb77-67"><a href="#cb77-67" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-68"><a href="#cb77-68" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb77-69"><a href="#cb77-69" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-70"><a href="#cb77-70" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-71"><a href="#cb77-71" aria-hidden="true" tabindex="-1"></a><span class="co"># # Consolidating the repeated</span></span>
-<span id="cb77-72"><a href="#cb77-72" aria-hidden="true" tabindex="-1"></a><span class="co"># # split-sample validated Brier Scores</span></span>
-<span id="cb77-73"><a href="#cb77-73" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb77-74"><a href="#cb77-74" aria-hidden="true" tabindex="-1"></a><span class="co"># (SplitValidation_BSC = data.frame(&#39;BSC&#39; = c(CPH_Model_BSC, RSF_Model_BSC),</span></span>
-<span id="cb77-75"><a href="#cb77-75" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Model&#39; = c(rep(&#39;CPH&#39;, 5), rep(&#39;RSF&#39;, 5)),</span></span>
-<span id="cb77-76"><a href="#cb77-76" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Metric&#39; = c(rep(&#39;BSC&#39;, 10))))</span></span>
-<span id="cb77-77"><a href="#cb77-77" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-78"><a href="#cb77-78" aria-hidden="true" tabindex="-1"></a><span class="co"># (CPH_Model_BSC_CV &lt;- mean(SplitValidation_BSC[SplitValidation_BSC$Model==&quot;CPH&quot;,1]))</span></span>
-<span id="cb77-79"><a href="#cb77-79" aria-hidden="true" tabindex="-1"></a><span class="co"># (RSF_Model_BSC_CV &lt;- mean(SplitValidation_BSC[SplitValidation_BSC$Model==&quot;RSF&quot;,1]))</span></span>
-<span id="cb77-80"><a href="#cb77-80" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb77-81"><a href="#cb77-81" aria-hidden="true" tabindex="-1"></a><span class="co"># bwplot(BSC ~ Model | Metric,</span></span>
-<span id="cb77-82"><a href="#cb77-82" aria-hidden="true" tabindex="-1"></a><span class="co">#        data = SplitValidation_BSC,</span></span>
-<span id="cb77-83"><a href="#cb77-83" aria-hidden="true" tabindex="-1"></a><span class="co">#        xlab = &quot;Survival Model&quot;,</span></span>
-<span id="cb77-84"><a href="#cb77-84" aria-hidden="true" tabindex="-1"></a><span class="co">#        ylab = &quot;Brier Score&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # using a numeric data type</span></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # for all variables</span></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MA_BSC &lt;- peakVO2.Source[,names(peakVO2.Source) %in% c(&quot;ttodead&quot;,&quot;died&quot;,&quot;interval&quot;,&quot;insulin&quot;)]</span></span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Initializing data containers</span></span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # and random seed</span></span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(88888888)</span></span>
+<span id="cb83-14"><a href="#cb83-14" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model_BSC = 0</span></span>
+<span id="cb83-15"><a href="#cb83-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPH_Model_BSC = 0</span></span>
+<span id="cb83-16"><a href="#cb83-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-17"><a href="#cb83-17" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:10) {</span></span>
+<span id="cb83-18"><a href="#cb83-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-19"><a href="#cb83-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the train and test sets</span></span>
+<span id="cb83-20"><a href="#cb83-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-21"><a href="#cb83-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Index = createFolds(1:nrow(MA_BSC), 2)</span></span>
+<span id="cb83-22"><a href="#cb83-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Train = MA_BSC[MA_BSC_Index[[1]],]</span></span>
+<span id="cb83-23"><a href="#cb83-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_BSC_Test = MA_BSC[MA_BSC_Index[[2]],]</span></span>
+<span id="cb83-24"><a href="#cb83-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-25"><a href="#cb83-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-26"><a href="#cb83-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Random Survival Forest model</span></span>
+<span id="cb83-27"><a href="#cb83-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
+<span id="cb83-28"><a href="#cb83-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-29"><a href="#cb83-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~.,</span></span>
+<span id="cb83-30"><a href="#cb83-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                    data = MA_BSC_Train,</span></span>
+<span id="cb83-31"><a href="#cb83-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                    nsplit = 3,</span></span>
+<span id="cb83-32"><a href="#cb83-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ntree = 500)</span></span>
+<span id="cb83-33"><a href="#cb83-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_PredObject &lt;- predict(RSF_Model, MA_BSC_Test)</span></span>
+<span id="cb83-34"><a href="#cb83-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-35"><a href="#cb83-35" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_Pred &lt;- RSF_Model_PredObject$survival</span></span>
+<span id="cb83-36"><a href="#cb83-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-37"><a href="#cb83-37" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-38"><a href="#cb83-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Consolidating the ordered unique death times</span></span>
+<span id="cb83-39"><a href="#cb83-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-40"><a href="#cb83-40" aria-hidden="true" tabindex="-1"></a><span class="co">#  Ordered_Unique_Death_Time = RSF_Model$time.interest</span></span>
+<span id="cb83-41"><a href="#cb83-41" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-42"><a href="#cb83-42" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-43"><a href="#cb83-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Cox Proportional Hazards model</span></span>
+<span id="cb83-44"><a href="#cb83-44" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
+<span id="cb83-45"><a href="#cb83-45" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-46"><a href="#cb83-46" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model &lt;-  coxph(Surv(ttodead, died)~.,</span></span>
+<span id="cb83-47"><a href="#cb83-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                      data = MA_BSC_Train,</span></span>
+<span id="cb83-48"><a href="#cb83-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                      x = TRUE)</span></span>
+<span id="cb83-49"><a href="#cb83-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_Pred = predictSurvProb(CPH_Model,</span></span>
+<span id="cb83-50"><a href="#cb83-50" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   MA_BSC_Test,</span></span>
+<span id="cb83-51"><a href="#cb83-51" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   Ordered_Unique_Death_Time)</span></span>
+<span id="cb83-52"><a href="#cb83-52" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-53"><a href="#cb83-53" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-54"><a href="#cb83-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Calculating the Brier Scores</span></span>
+<span id="cb83-55"><a href="#cb83-55" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb83-56"><a href="#cb83-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_Index &lt;- median(1:length(Ordered_Unique_Death_Time))</span></span>
+<span id="cb83-57"><a href="#cb83-57" aria-hidden="true" tabindex="-1"></a><span class="co">#  Survival_Object &lt;- Surv(MA_BSC_Test$ttodead, MA_BSC_Test$died)</span></span>
+<span id="cb83-58"><a href="#cb83-58" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_DeathTime &lt;- median(Ordered_Unique_Death_Time)</span></span>
+<span id="cb83-59"><a href="#cb83-59" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-60"><a href="#cb83-60" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_BSC[i] &lt;- Brier(Survival_Object,</span></span>
+<span id="cb83-61"><a href="#cb83-61" aria-hidden="true" tabindex="-1"></a><span class="co">#                            pre_sp = RSF_Model_Pred[,Median_Index],</span></span>
+<span id="cb83-62"><a href="#cb83-62" aria-hidden="true" tabindex="-1"></a><span class="co">#                            Median_DeathTime)</span></span>
+<span id="cb83-63"><a href="#cb83-63" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-64"><a href="#cb83-64" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_BSC[i] &lt;- Brier(Survival_Object,</span></span>
+<span id="cb83-65"><a href="#cb83-65" aria-hidden="true" tabindex="-1"></a><span class="co">#                            pre_sp = CPH_Model_Pred[,Median_Index],</span></span>
+<span id="cb83-66"><a href="#cb83-66" aria-hidden="true" tabindex="-1"></a><span class="co">#                            Median_DeathTime)</span></span>
+<span id="cb83-67"><a href="#cb83-67" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-68"><a href="#cb83-68" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb83-69"><a href="#cb83-69" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-70"><a href="#cb83-70" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-71"><a href="#cb83-71" aria-hidden="true" tabindex="-1"></a><span class="co"># # Consolidating the repeated</span></span>
+<span id="cb83-72"><a href="#cb83-72" aria-hidden="true" tabindex="-1"></a><span class="co"># # split-sample validated Brier Scores</span></span>
+<span id="cb83-73"><a href="#cb83-73" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb83-74"><a href="#cb83-74" aria-hidden="true" tabindex="-1"></a><span class="co"># (SplitValidation_BSC = data.frame(&#39;BSC&#39; = c(CPH_Model_BSC, RSF_Model_BSC),</span></span>
+<span id="cb83-75"><a href="#cb83-75" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Model&#39; = c(rep(&#39;CPH&#39;, 5), rep(&#39;RSF&#39;, 5)),</span></span>
+<span id="cb83-76"><a href="#cb83-76" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Metric&#39; = c(rep(&#39;BSC&#39;, 10))))</span></span>
+<span id="cb83-77"><a href="#cb83-77" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-78"><a href="#cb83-78" aria-hidden="true" tabindex="-1"></a><span class="co"># (CPH_Model_BSC_CV &lt;- mean(SplitValidation_BSC[SplitValidation_BSC$Model==&quot;CPH&quot;,1]))</span></span>
+<span id="cb83-79"><a href="#cb83-79" aria-hidden="true" tabindex="-1"></a><span class="co"># (RSF_Model_BSC_CV &lt;- mean(SplitValidation_BSC[SplitValidation_BSC$Model==&quot;RSF&quot;,1]))</span></span>
+<span id="cb83-80"><a href="#cb83-80" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb83-81"><a href="#cb83-81" aria-hidden="true" tabindex="-1"></a><span class="co"># bwplot(BSC ~ Model | Metric,</span></span>
+<span id="cb83-82"><a href="#cb83-82" aria-hidden="true" tabindex="-1"></a><span class="co">#        data = SplitValidation_BSC,</span></span>
+<span id="cb83-83"><a href="#cb83-83" aria-hidden="true" tabindex="-1"></a><span class="co">#        xlab = &quot;Survival Model&quot;,</span></span>
+<span id="cb83-84"><a href="#cb83-84" aria-hidden="true" tabindex="-1"></a><span class="co">#        ylab = &quot;Brier Score&quot;)</span></span></code></pre></div>
 </div>
 <div id="integrated-brier-score-ibsc" class="section level3">
 <h3>1.5.3 Integrated Brier Score (IBSC)</h3>
@@ -4150,86 +4190,86 @@ on 5 iterations are summarized as follows: :<br />
      <strong>[D.3]</strong> The range of cross-validated BSC metrics was
 relatively comparable for both the RSF and CPH models.<br />
 </div>
-<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
-<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
-<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # using a numeric data type</span></span>
-<span id="cb78-5"><a href="#cb78-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # for all variables</span></span>
-<span id="cb78-6"><a href="#cb78-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-7"><a href="#cb78-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MA_IBSC &lt;- peakVO2.Source[,!names(peakVO2) %in% c(&quot;dilver&quot;,&quot;nifed&quot;)]</span></span>
-<span id="cb78-8"><a href="#cb78-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-9"><a href="#cb78-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-10"><a href="#cb78-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Initializing data containers</span></span>
-<span id="cb78-11"><a href="#cb78-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # and random seed</span></span>
-<span id="cb78-12"><a href="#cb78-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-13"><a href="#cb78-13" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(88888888)</span></span>
-<span id="cb78-14"><a href="#cb78-14" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model_IBSC = 0</span></span>
-<span id="cb78-15"><a href="#cb78-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPH_Model_IBSC = 0</span></span>
-<span id="cb78-16"><a href="#cb78-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-17"><a href="#cb78-17" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:5) {</span></span>
-<span id="cb78-18"><a href="#cb78-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-19"><a href="#cb78-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the train and test sets </span></span>
-<span id="cb78-20"><a href="#cb78-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-21"><a href="#cb78-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Index = createFolds(1:nrow(MA_IBSC), 2)</span></span>
-<span id="cb78-22"><a href="#cb78-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Train = MA_IBSC[MA_IBSC_Index[[1]],]</span></span>
-<span id="cb78-23"><a href="#cb78-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Test = MA_IBSC[MA_IBSC_Index[[2]],]</span></span>
-<span id="cb78-24"><a href="#cb78-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-25"><a href="#cb78-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-26"><a href="#cb78-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Random Survival Forest model</span></span>
-<span id="cb78-27"><a href="#cb78-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb78-28"><a href="#cb78-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-29"><a href="#cb78-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~.,</span></span>
-<span id="cb78-30"><a href="#cb78-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                    data = MA_IBSC_Train,</span></span>
-<span id="cb78-31"><a href="#cb78-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                    nsplit = 3,</span></span>
-<span id="cb78-32"><a href="#cb78-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ntree = 500)</span></span>
-<span id="cb78-33"><a href="#cb78-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_PredObject &lt;- predict(RSF_Model, MA_IBSC_Test)</span></span>
-<span id="cb78-34"><a href="#cb78-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-35"><a href="#cb78-35" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_Pred &lt;- RSF_Model_PredObject$survival</span></span>
-<span id="cb78-36"><a href="#cb78-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-37"><a href="#cb78-37" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-38"><a href="#cb78-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Consolidating the ordered unique death times</span></span>
-<span id="cb78-39"><a href="#cb78-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-40"><a href="#cb78-40" aria-hidden="true" tabindex="-1"></a><span class="co">#  Ordered_Unique_Death_Time = RSF_Model$time.interest</span></span>
-<span id="cb78-41"><a href="#cb78-41" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-42"><a href="#cb78-42" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-43"><a href="#cb78-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Cox Proportional Hazards model</span></span>
-<span id="cb78-44"><a href="#cb78-44" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
-<span id="cb78-45"><a href="#cb78-45" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-46"><a href="#cb78-46" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model &lt;-  coxph(Surv(ttodead, died)~.,</span></span>
-<span id="cb78-47"><a href="#cb78-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                      data = MA_IBSC_Train,</span></span>
-<span id="cb78-48"><a href="#cb78-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                      x = TRUE)</span></span>
-<span id="cb78-49"><a href="#cb78-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_Pred = predictSurvProb(CPH_Model, </span></span>
-<span id="cb78-50"><a href="#cb78-50" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   MA_IBSC_Test, </span></span>
-<span id="cb78-51"><a href="#cb78-51" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   Ordered_Unique_Death_Time)</span></span>
-<span id="cb78-52"><a href="#cb78-52" aria-hidden="true" tabindex="-1"></a><span class="co">#  </span></span>
-<span id="cb78-53"><a href="#cb78-53" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-54"><a href="#cb78-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Calculating the Concordance Indices</span></span>
-<span id="cb78-55"><a href="#cb78-55" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
-<span id="cb78-56"><a href="#cb78-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_Index &lt;- median(1:length(Ordered_Unique_Death_Time))</span></span>
-<span id="cb78-57"><a href="#cb78-57" aria-hidden="true" tabindex="-1"></a><span class="co">#  Survival_Object &lt;- Surv(MA_IBSC_Test$ttodead, MA_IBSC_Test$died)</span></span>
-<span id="cb78-58"><a href="#cb78-58" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-59"><a href="#cb78-59" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_IBSC[i] &lt;- IBS(Survival_Object,</span></span>
-<span id="cb78-60"><a href="#cb78-60" aria-hidden="true" tabindex="-1"></a><span class="co">#                           sp_matrix = RSF_Model_Pred,</span></span>
-<span id="cb78-61"><a href="#cb78-61" aria-hidden="true" tabindex="-1"></a><span class="co">#                           Ordered_Unique_Death_Time)</span></span>
-<span id="cb78-62"><a href="#cb78-62" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-63"><a href="#cb78-63" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_IBSC[i] &lt;- IBS(Survival_Object,</span></span>
-<span id="cb78-64"><a href="#cb78-64" aria-hidden="true" tabindex="-1"></a><span class="co">#                           sp_matrix = CPH_Model_Pred,</span></span>
-<span id="cb78-65"><a href="#cb78-65" aria-hidden="true" tabindex="-1"></a><span class="co">#                           Ordered_Unique_Death_Time)</span></span>
-<span id="cb78-66"><a href="#cb78-66" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-67"><a href="#cb78-67" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
-<span id="cb78-68"><a href="#cb78-68" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-69"><a href="#cb78-69" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-70"><a href="#cb78-70" aria-hidden="true" tabindex="-1"></a><span class="co"># # Consolidating the repeated </span></span>
-<span id="cb78-71"><a href="#cb78-71" aria-hidden="true" tabindex="-1"></a><span class="co"># # split-sample validated Concordance Indices</span></span>
-<span id="cb78-72"><a href="#cb78-72" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
-<span id="cb78-73"><a href="#cb78-73" aria-hidden="true" tabindex="-1"></a><span class="co"># (SplitValidation_IBSC = data.frame(&#39;IBSC&#39; = c(CPH_Model_IBSC, RSF_Model_IBSC),</span></span>
-<span id="cb78-74"><a href="#cb78-74" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Model&#39; = c(rep(&#39;CPH&#39;, 5), rep(&#39;RSF&#39;, 5)),</span></span>
-<span id="cb78-75"><a href="#cb78-75" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Metric&#39; = c(rep(&#39;IBSC&#39;, 10))))</span></span>
-<span id="cb78-76"><a href="#cb78-76" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
-<span id="cb78-77"><a href="#cb78-77" aria-hidden="true" tabindex="-1"></a><span class="co"># bwplot(IBSC ~ Model | Metric,  </span></span>
-<span id="cb78-78"><a href="#cb78-78" aria-hidden="true" tabindex="-1"></a><span class="co">#        data = SplitValidation_IBSC,</span></span>
-<span id="cb78-79"><a href="#cb78-79" aria-hidden="true" tabindex="-1"></a><span class="co">#        xlab = &quot;Survival Model&quot;, </span></span>
-<span id="cb78-80"><a href="#cb78-80" aria-hidden="true" tabindex="-1"></a><span class="co">#        ylab = &quot;Integrated Brier Score&quot;)</span></span></code></pre></div>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="co"># # Creating a local object</span></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="co"># # for the train set</span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a><span class="co"># # using a numeric data type</span></span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a><span class="co"># # for all variables</span></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a><span class="co"># MA_IBSC &lt;- peakVO2.Source[,!names(peakVO2) %in% c(&quot;dilver&quot;,&quot;nifed&quot;)]</span></span>
+<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a><span class="co"># # Initializing data containers</span></span>
+<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a><span class="co"># # and random seed</span></span>
+<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a><span class="co"># set.seed(88888888)</span></span>
+<span id="cb84-14"><a href="#cb84-14" aria-hidden="true" tabindex="-1"></a><span class="co"># RSF_Model_IBSC = 0</span></span>
+<span id="cb84-15"><a href="#cb84-15" aria-hidden="true" tabindex="-1"></a><span class="co"># CPH_Model_IBSC = 0</span></span>
+<span id="cb84-16"><a href="#cb84-16" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-17"><a href="#cb84-17" aria-hidden="true" tabindex="-1"></a><span class="co"># for (i in 1:5) {</span></span>
+<span id="cb84-18"><a href="#cb84-18" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-19"><a href="#cb84-19" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the train and test sets </span></span>
+<span id="cb84-20"><a href="#cb84-20" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-21"><a href="#cb84-21" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Index = createFolds(1:nrow(MA_IBSC), 2)</span></span>
+<span id="cb84-22"><a href="#cb84-22" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Train = MA_IBSC[MA_IBSC_Index[[1]],]</span></span>
+<span id="cb84-23"><a href="#cb84-23" aria-hidden="true" tabindex="-1"></a><span class="co">#  MA_IBSC_Test = MA_IBSC[MA_IBSC_Index[[2]],]</span></span>
+<span id="cb84-24"><a href="#cb84-24" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-25"><a href="#cb84-25" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-26"><a href="#cb84-26" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Random Survival Forest model</span></span>
+<span id="cb84-27"><a href="#cb84-27" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
+<span id="cb84-28"><a href="#cb84-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-29"><a href="#cb84-29" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model &lt;-  rfsrc(Surv(ttodead, died)~.,</span></span>
+<span id="cb84-30"><a href="#cb84-30" aria-hidden="true" tabindex="-1"></a><span class="co">#                    data = MA_IBSC_Train,</span></span>
+<span id="cb84-31"><a href="#cb84-31" aria-hidden="true" tabindex="-1"></a><span class="co">#                    nsplit = 3,</span></span>
+<span id="cb84-32"><a href="#cb84-32" aria-hidden="true" tabindex="-1"></a><span class="co">#                    ntree = 500)</span></span>
+<span id="cb84-33"><a href="#cb84-33" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_PredObject &lt;- predict(RSF_Model, MA_IBSC_Test)</span></span>
+<span id="cb84-34"><a href="#cb84-34" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-35"><a href="#cb84-35" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_Pred &lt;- RSF_Model_PredObject$survival</span></span>
+<span id="cb84-36"><a href="#cb84-36" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-37"><a href="#cb84-37" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-38"><a href="#cb84-38" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Consolidating the ordered unique death times</span></span>
+<span id="cb84-39"><a href="#cb84-39" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-40"><a href="#cb84-40" aria-hidden="true" tabindex="-1"></a><span class="co">#  Ordered_Unique_Death_Time = RSF_Model$time.interest</span></span>
+<span id="cb84-41"><a href="#cb84-41" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-42"><a href="#cb84-42" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-43"><a href="#cb84-43" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Formulating the Cox Proportional Hazards model</span></span>
+<span id="cb84-44"><a href="#cb84-44" aria-hidden="true" tabindex="-1"></a><span class="co">#  # and generating model predictions</span></span>
+<span id="cb84-45"><a href="#cb84-45" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-46"><a href="#cb84-46" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model &lt;-  coxph(Surv(ttodead, died)~.,</span></span>
+<span id="cb84-47"><a href="#cb84-47" aria-hidden="true" tabindex="-1"></a><span class="co">#                      data = MA_IBSC_Train,</span></span>
+<span id="cb84-48"><a href="#cb84-48" aria-hidden="true" tabindex="-1"></a><span class="co">#                      x = TRUE)</span></span>
+<span id="cb84-49"><a href="#cb84-49" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_Pred = predictSurvProb(CPH_Model, </span></span>
+<span id="cb84-50"><a href="#cb84-50" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   MA_IBSC_Test, </span></span>
+<span id="cb84-51"><a href="#cb84-51" aria-hidden="true" tabindex="-1"></a><span class="co">#                                   Ordered_Unique_Death_Time)</span></span>
+<span id="cb84-52"><a href="#cb84-52" aria-hidden="true" tabindex="-1"></a><span class="co">#  </span></span>
+<span id="cb84-53"><a href="#cb84-53" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-54"><a href="#cb84-54" aria-hidden="true" tabindex="-1"></a><span class="co">#  # Calculating the Concordance Indices</span></span>
+<span id="cb84-55"><a href="#cb84-55" aria-hidden="true" tabindex="-1"></a><span class="co">#  ##################################</span></span>
+<span id="cb84-56"><a href="#cb84-56" aria-hidden="true" tabindex="-1"></a><span class="co">#  Median_Index &lt;- median(1:length(Ordered_Unique_Death_Time))</span></span>
+<span id="cb84-57"><a href="#cb84-57" aria-hidden="true" tabindex="-1"></a><span class="co">#  Survival_Object &lt;- Surv(MA_IBSC_Test$ttodead, MA_IBSC_Test$died)</span></span>
+<span id="cb84-58"><a href="#cb84-58" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-59"><a href="#cb84-59" aria-hidden="true" tabindex="-1"></a><span class="co">#  RSF_Model_IBSC[i] &lt;- IBS(Survival_Object,</span></span>
+<span id="cb84-60"><a href="#cb84-60" aria-hidden="true" tabindex="-1"></a><span class="co">#                           sp_matrix = RSF_Model_Pred,</span></span>
+<span id="cb84-61"><a href="#cb84-61" aria-hidden="true" tabindex="-1"></a><span class="co">#                           Ordered_Unique_Death_Time)</span></span>
+<span id="cb84-62"><a href="#cb84-62" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-63"><a href="#cb84-63" aria-hidden="true" tabindex="-1"></a><span class="co">#  CPH_Model_IBSC[i] &lt;- IBS(Survival_Object,</span></span>
+<span id="cb84-64"><a href="#cb84-64" aria-hidden="true" tabindex="-1"></a><span class="co">#                           sp_matrix = CPH_Model_Pred,</span></span>
+<span id="cb84-65"><a href="#cb84-65" aria-hidden="true" tabindex="-1"></a><span class="co">#                           Ordered_Unique_Death_Time)</span></span>
+<span id="cb84-66"><a href="#cb84-66" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-67"><a href="#cb84-67" aria-hidden="true" tabindex="-1"></a><span class="co"># }</span></span>
+<span id="cb84-68"><a href="#cb84-68" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-69"><a href="#cb84-69" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-70"><a href="#cb84-70" aria-hidden="true" tabindex="-1"></a><span class="co"># # Consolidating the repeated </span></span>
+<span id="cb84-71"><a href="#cb84-71" aria-hidden="true" tabindex="-1"></a><span class="co"># # split-sample validated Concordance Indices</span></span>
+<span id="cb84-72"><a href="#cb84-72" aria-hidden="true" tabindex="-1"></a><span class="co"># ##################################</span></span>
+<span id="cb84-73"><a href="#cb84-73" aria-hidden="true" tabindex="-1"></a><span class="co"># (SplitValidation_IBSC = data.frame(&#39;IBSC&#39; = c(CPH_Model_IBSC, RSF_Model_IBSC),</span></span>
+<span id="cb84-74"><a href="#cb84-74" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Model&#39; = c(rep(&#39;CPH&#39;, 5), rep(&#39;RSF&#39;, 5)),</span></span>
+<span id="cb84-75"><a href="#cb84-75" aria-hidden="true" tabindex="-1"></a><span class="co">#                                  &#39;Metric&#39; = c(rep(&#39;IBSC&#39;, 10))))</span></span>
+<span id="cb84-76"><a href="#cb84-76" aria-hidden="true" tabindex="-1"></a><span class="co"># </span></span>
+<span id="cb84-77"><a href="#cb84-77" aria-hidden="true" tabindex="-1"></a><span class="co"># bwplot(IBSC ~ Model | Metric,  </span></span>
+<span id="cb84-78"><a href="#cb84-78" aria-hidden="true" tabindex="-1"></a><span class="co">#        data = SplitValidation_IBSC,</span></span>
+<span id="cb84-79"><a href="#cb84-79" aria-hidden="true" tabindex="-1"></a><span class="co">#        xlab = &quot;Survival Model&quot;, </span></span>
+<span id="cb84-80"><a href="#cb84-80" aria-hidden="true" tabindex="-1"></a><span class="co">#        ylab = &quot;Integrated Brier Score&quot;)</span></span></code></pre></div>
 </div>
 <div id="integrated-absolute-error-iae" class="section level3">
 <h3>1.5.4 Integrated Absolute Error (IAE)</h3>
@@ -4243,9 +4283,9 @@ based on least-absolute errors.<br />
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
-<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
+<div class="sourceCode" id="cb85"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
 </div>
 <div id="integrated-square-error-ise" class="section level3">
 <h3>1.5.5 Integrated Square Error (ISE)</h3>
@@ -4259,9 +4299,9 @@ based on least-squares errors.<br />
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
-<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
 </div>
 <div id="mean-absolute-error-mae" class="section level3">
 <h3>1.5.6 Mean Absolute Error (MAE)</h3>
@@ -4275,9 +4315,9 @@ values, by only considering samples for which the event occurs.<br />
 package.<br />
      <strong>[A.1]</strong> <span style="color: #FF0000">parameter</span> = details.<br />
 </div>
-<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
-<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Details</span></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
 </div>
 </div>
 <div id="metric-comparison-summary" class="section level2">
@@ -4292,9 +4332,9 @@ package)<br />
             <strong>[A.1.1]</strong> Details = 0.xxxxx<br />
             <strong>[A.1.2]</strong> Details = 0.xxxxx<br />
 </div>
-<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="co"># For update</span></span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="co"># For update</span></span>
+<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span></code></pre></div>
 </div>
 </div>
 <div id="references" class="section level1">
