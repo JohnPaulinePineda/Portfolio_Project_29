@@ -559,71 +559,71 @@ Preliminary dataset assessment:<br />
 <span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SurvMetrics)</span>
 <span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(pec)</span>
 <span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading source and</span></span>
-<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="co"># formulating the train set</span></span>
-<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(peakVO2)</span>
-<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>peakVO2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(peakVO2)</span>
-<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting survival time</span></span>
-<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="co"># to discrete monthly data</span></span>
-<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>peakVO2<span class="sc">$</span>ttodead <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(peakVO2<span class="sc">$</span>ttodead<span class="sc">*</span><span class="dv">12</span>)</span>
-<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a>peakVO2.Source <span class="ot">&lt;-</span> peakVO2</span>
-<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting the appropriate data types</span></span>
-<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="co"># for exploratory data analysis</span></span>
-<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
-<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>(peakVO2.Assessment <span class="ot">&lt;-</span> (<span class="fu">as.data.frame</span>(<span class="fu">sapply</span>(peakVO2, <span class="cf">function</span>(x) <span class="fu">max</span>(x)))))</span></code></pre></div>
-<pre><code>##                         sapply(peakVO2, function(x) max(x))
-## age                                                82.00000
-## betablok                                            1.00000
-## dilver                                              1.00000
-## nifed                                               1.00000
-## acei                                                1.00000
-## angioten.II                                         1.00000
-## anti.arrhy                                          1.00000
-## anti.coag                                           1.00000
-## aspirin                                             1.00000
-## digoxin                                             1.00000
-## nitrates                                            1.00000
-## vasodilator                                         1.00000
-## diuretic.loop                                       1.00000
-## diuretic.thiazide                                   1.00000
-## diuretic.potassium.spar                             1.00000
-## lipidrx.statin                                      1.00000
-## insulin                                             1.00000
-## surgery.pacemaker                                   1.00000
-## surgery.cabg                                        1.00000
-## surgery.pci                                         1.00000
-## surgery.aicd.implant                                1.00000
-## resting.systolic.bp                               184.00000
-## resting.hr                                        124.00000
-## smknow                                              1.00000
-## q.wave.mi                                           1.00000
-## bmi                                                59.61593
-## niddm                                               1.00000
-## lvef.metabl                                        40.00000
-## peak.rer                                            1.80000
-## peak.vo2                                           43.80000
-## interval                                         1415.00000
-## cad                                                 1.00000
-## died                                                1.00000
-## ttodead                                           127.00000
-## bun                                               129.00000
-## sodium                                            152.00000
-## hgb                                                19.20000
-## glucose                                           424.00000
-## male                                                1.00000
-## black                                               1.00000
-## crcl                                              385.84097</code></pre>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>peakVO2.Assessment<span class="sc">$</span>Variables <span class="ot">&lt;-</span> <span class="fu">rownames</span>(peakVO2.Assessment)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>(peakVO2.FactorNames <span class="ot">&lt;-</span> peakVO2.Assessment[peakVO2.Assessment[,<span class="dv">1</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">2</span>])</span></code></pre></div>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading source and</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="co"># formulating the train set</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(peakVO2)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>peakVO2 <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(peakVO2)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Converting survival time</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="co"># to discrete monthly data</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>peakVO2<span class="sc">$</span>ttodead <span class="ot">&lt;-</span> <span class="fu">ceiling</span>(peakVO2<span class="sc">$</span>ttodead<span class="sc">*</span><span class="dv">12</span>)</span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a>peakVO2.Source <span class="ot">&lt;-</span> peakVO2</span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="co"># Setting the appropriate data types</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="co"># for exploratory data analysis</span></span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a><span class="do">##################################</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>peakVO2.Assessment <span class="ot">&lt;-</span> (<span class="fu">as.data.frame</span>(<span class="fu">sapply</span>(peakVO2, <span class="cf">function</span>(x) <span class="fu">max</span>(x))))</span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(peakVO2.Assessment) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Max.Value&quot;</span>)</span>
+<span id="cb1-46"><a href="#cb1-46" aria-hidden="true" tabindex="-1"></a>peakVO2.Assessment<span class="sc">$</span>Variables <span class="ot">&lt;-</span> <span class="fu">rownames</span>(peakVO2.Assessment)</span>
+<span id="cb1-47"><a href="#cb1-47" aria-hidden="true" tabindex="-1"></a>peakVO2.Assessment</span></code></pre></div>
+<pre><code>##                          Max.Value               Variables
+## age                       82.00000                     age
+## betablok                   1.00000                betablok
+## dilver                     1.00000                  dilver
+## nifed                      1.00000                   nifed
+## acei                       1.00000                    acei
+## angioten.II                1.00000             angioten.II
+## anti.arrhy                 1.00000              anti.arrhy
+## anti.coag                  1.00000               anti.coag
+## aspirin                    1.00000                 aspirin
+## digoxin                    1.00000                 digoxin
+## nitrates                   1.00000                nitrates
+## vasodilator                1.00000             vasodilator
+## diuretic.loop              1.00000           diuretic.loop
+## diuretic.thiazide          1.00000       diuretic.thiazide
+## diuretic.potassium.spar    1.00000 diuretic.potassium.spar
+## lipidrx.statin             1.00000          lipidrx.statin
+## insulin                    1.00000                 insulin
+## surgery.pacemaker          1.00000       surgery.pacemaker
+## surgery.cabg               1.00000            surgery.cabg
+## surgery.pci                1.00000             surgery.pci
+## surgery.aicd.implant       1.00000    surgery.aicd.implant
+## resting.systolic.bp      184.00000     resting.systolic.bp
+## resting.hr               124.00000              resting.hr
+## smknow                     1.00000                  smknow
+## q.wave.mi                  1.00000               q.wave.mi
+## bmi                       59.61593                     bmi
+## niddm                      1.00000                   niddm
+## lvef.metabl               40.00000             lvef.metabl
+## peak.rer                   1.80000                peak.rer
+## peak.vo2                  43.80000                peak.vo2
+## interval                1415.00000                interval
+## cad                        1.00000                     cad
+## died                       1.00000                    died
+## ttodead                  127.00000                 ttodead
+## bun                      129.00000                     bun
+## sodium                   152.00000                  sodium
+## hgb                       19.20000                     hgb
+## glucose                  424.00000                 glucose
+## male                       1.00000                    male
+## black                      1.00000                   black
+## crcl                     385.84097                    crcl</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>(peakVO2.FactorNames <span class="ot">&lt;-</span> peakVO2.Assessment[peakVO2.Assessment[,<span class="dv">1</span>]<span class="sc">==</span><span class="dv">1</span>,<span class="dv">2</span>])</span></code></pre></div>
 <pre><code>##  [1] &quot;betablok&quot;                &quot;dilver&quot;                 
 ##  [3] &quot;nifed&quot;                   &quot;acei&quot;                   
 ##  [5] &quot;angioten.II&quot;             &quot;anti.arrhy&quot;             
@@ -3484,12 +3484,12 @@ variable (factor)<br />
 <span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing =</span> <span class="st">&quot;no&quot;</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_overall</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_p</span>()</span></code></pre></div>
-<div id="cinfvzvzcv" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="nbwyuhvnoy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#cinfvzvzcv .gt_table {
+#nbwyuhvnoy .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -3514,7 +3514,7 @@ variable (factor)<br />
   border-left-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_heading {
+#nbwyuhvnoy .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -3526,12 +3526,12 @@ variable (factor)<br />
   border-right-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_caption {
+#nbwyuhvnoy .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#cinfvzvzcv .gt_title {
+#nbwyuhvnoy .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -3543,7 +3543,7 @@ variable (factor)<br />
   border-bottom-width: 0;
 }
 
-#cinfvzvzcv .gt_subtitle {
+#nbwyuhvnoy .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -3555,13 +3555,13 @@ variable (factor)<br />
   border-top-width: 0;
 }
 
-#cinfvzvzcv .gt_bottom_border {
+#nbwyuhvnoy .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_col_headings {
+#nbwyuhvnoy .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3576,7 +3576,7 @@ variable (factor)<br />
   border-right-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_col_heading {
+#nbwyuhvnoy .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3596,7 +3596,7 @@ variable (factor)<br />
   overflow-x: hidden;
 }
 
-#cinfvzvzcv .gt_column_spanner_outer {
+#nbwyuhvnoy .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3608,15 +3608,15 @@ variable (factor)<br />
   padding-right: 4px;
 }
 
-#cinfvzvzcv .gt_column_spanner_outer:first-child {
+#nbwyuhvnoy .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#cinfvzvzcv .gt_column_spanner_outer:last-child {
+#nbwyuhvnoy .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#cinfvzvzcv .gt_column_spanner {
+#nbwyuhvnoy .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -3628,7 +3628,7 @@ variable (factor)<br />
   width: 100%;
 }
 
-#cinfvzvzcv .gt_group_heading {
+#nbwyuhvnoy .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3654,7 +3654,7 @@ variable (factor)<br />
   text-align: left;
 }
 
-#cinfvzvzcv .gt_empty_group_heading {
+#nbwyuhvnoy .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -3669,15 +3669,15 @@ variable (factor)<br />
   vertical-align: middle;
 }
 
-#cinfvzvzcv .gt_from_md > :first-child {
+#nbwyuhvnoy .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#cinfvzvzcv .gt_from_md > :last-child {
+#nbwyuhvnoy .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#cinfvzvzcv .gt_row {
+#nbwyuhvnoy .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3696,7 +3696,7 @@ variable (factor)<br />
   overflow-x: hidden;
 }
 
-#cinfvzvzcv .gt_stub {
+#nbwyuhvnoy .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3709,7 +3709,7 @@ variable (factor)<br />
   padding-right: 5px;
 }
 
-#cinfvzvzcv .gt_stub_row_group {
+#nbwyuhvnoy .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -3723,11 +3723,11 @@ variable (factor)<br />
   vertical-align: top;
 }
 
-#cinfvzvzcv .gt_row_group_first td {
+#nbwyuhvnoy .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#cinfvzvzcv .gt_summary_row {
+#nbwyuhvnoy .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3737,16 +3737,16 @@ variable (factor)<br />
   padding-right: 5px;
 }
 
-#cinfvzvzcv .gt_first_summary_row {
+#nbwyuhvnoy .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_first_summary_row.thick {
+#nbwyuhvnoy .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#cinfvzvzcv .gt_last_summary_row {
+#nbwyuhvnoy .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3756,7 +3756,7 @@ variable (factor)<br />
   border-bottom-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_grand_summary_row {
+#nbwyuhvnoy .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -3766,7 +3766,7 @@ variable (factor)<br />
   padding-right: 5px;
 }
 
-#cinfvzvzcv .gt_first_grand_summary_row {
+#nbwyuhvnoy .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -3776,11 +3776,11 @@ variable (factor)<br />
   border-top-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_striped {
+#nbwyuhvnoy .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#cinfvzvzcv .gt_table_body {
+#nbwyuhvnoy .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -3789,7 +3789,7 @@ variable (factor)<br />
   border-bottom-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_footnotes {
+#nbwyuhvnoy .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3803,7 +3803,7 @@ variable (factor)<br />
   border-right-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_footnote {
+#nbwyuhvnoy .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -3812,7 +3812,7 @@ variable (factor)<br />
   padding-right: 5px;
 }
 
-#cinfvzvzcv .gt_sourcenotes {
+#nbwyuhvnoy .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -3826,7 +3826,7 @@ variable (factor)<br />
   border-right-color: #D3D3D3;
 }
 
-#cinfvzvzcv .gt_sourcenote {
+#nbwyuhvnoy .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -3834,64 +3834,64 @@ variable (factor)<br />
   padding-right: 5px;
 }
 
-#cinfvzvzcv .gt_left {
+#nbwyuhvnoy .gt_left {
   text-align: left;
 }
 
-#cinfvzvzcv .gt_center {
+#nbwyuhvnoy .gt_center {
   text-align: center;
 }
 
-#cinfvzvzcv .gt_right {
+#nbwyuhvnoy .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#cinfvzvzcv .gt_font_normal {
+#nbwyuhvnoy .gt_font_normal {
   font-weight: normal;
 }
 
-#cinfvzvzcv .gt_font_bold {
+#nbwyuhvnoy .gt_font_bold {
   font-weight: bold;
 }
 
-#cinfvzvzcv .gt_font_italic {
+#nbwyuhvnoy .gt_font_italic {
   font-style: italic;
 }
 
-#cinfvzvzcv .gt_super {
+#nbwyuhvnoy .gt_super {
   font-size: 65%;
 }
 
-#cinfvzvzcv .gt_footnote_marks {
+#nbwyuhvnoy .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#cinfvzvzcv .gt_asterisk {
+#nbwyuhvnoy .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#cinfvzvzcv .gt_indent_1 {
+#nbwyuhvnoy .gt_indent_1 {
   text-indent: 5px;
 }
 
-#cinfvzvzcv .gt_indent_2 {
+#nbwyuhvnoy .gt_indent_2 {
   text-indent: 10px;
 }
 
-#cinfvzvzcv .gt_indent_3 {
+#nbwyuhvnoy .gt_indent_3 {
   text-indent: 15px;
 }
 
-#cinfvzvzcv .gt_indent_4 {
+#nbwyuhvnoy .gt_indent_4 {
   text-indent: 20px;
 }
 
-#cinfvzvzcv .gt_indent_5 {
+#nbwyuhvnoy .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

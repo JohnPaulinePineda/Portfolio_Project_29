@@ -62,7 +62,6 @@ library(randomForestSRC)
 library(SurvMetrics)
 library(pec)
 
-
 ##################################
 # Loading source and
 # formulating the train set
@@ -81,8 +80,10 @@ peakVO2.Source <- peakVO2
 # Setting the appropriate data types
 # for exploratory data analysis
 ##################################
-(peakVO2.Assessment <- (as.data.frame(sapply(peakVO2, function(x) max(x)))))
+peakVO2.Assessment <- (as.data.frame(sapply(peakVO2, function(x) max(x))))
+names(peakVO2.Assessment) <- c("Max.Value")
 peakVO2.Assessment$Variables <- rownames(peakVO2.Assessment)
+peakVO2.Assessment
 
 (peakVO2.FactorNames <- peakVO2.Assessment[peakVO2.Assessment[,1]==1,2])
 peakVO2.Factor <- peakVO2[,peakVO2.FactorNames]
