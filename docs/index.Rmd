@@ -1532,7 +1532,7 @@ for (i in 1:25) {
 |
 | **[C]** The CPH model does not contain any hyperparameter.
 |
-| **[D]** The average split-sample cross-validated IAE based on 25 iterations are summarized as follows: :
+| **[D]** The average split-sample cross-validated ISE based on 25 iterations are summarized as follows: :
 |      **[D.1]** RSF = 0.04191
 |      **[D.2]** CPH = 0.04342
 |      **[D.3]** The range of cross-validated ISE metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
