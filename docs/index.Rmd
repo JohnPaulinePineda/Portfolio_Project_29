@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.width=15, fig.height=10)
 |
 | This document implements a comparison of evaluation metrics for assessing survival model performance using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>.    
 |
-| Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the agreement between the predicted and actual measures for each observation (expressed in survival probability, status or time), while considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions.
+| Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the agreement between the predicted and actual measures for each observation (expressed in survival probability, status or time), while considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions on unseen data.
 |
 ##  1.1 Sample Data
 |
