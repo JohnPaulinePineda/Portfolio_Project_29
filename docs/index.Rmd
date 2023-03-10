@@ -1420,7 +1420,7 @@ for (i in 1:25) {
 | **[D]** The average split-sample cross-validated IAE based on 25 iterations are summarized as follows: :
 |      **[D.1]** RSF = 1.76058
 |      **[D.2]** CPH = 1.69852
-|      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
+|      **[D.3]** The range of cross-validated IAE metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
 ```{r section_1.5.3, warning=FALSE, message=FALSE}
 ##################################
@@ -1535,7 +1535,7 @@ for (i in 1:25) {
 | **[D]** The average split-sample cross-validated IAE based on 25 iterations are summarized as follows: :
 |      **[D.1]** RSF = 0.04191
 |      **[D.2]** CPH = 0.04342
-|      **[D.3]** The range of cross-validated BSC metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
+|      **[D.3]** The range of cross-validated ISE metrics was relatively lower for the CPH model as compared to RSF model, indicating that CPH model had better model predictions.
 |
 ```{r section_1.5.4, warning=FALSE, message=FALSE}
 ##################################
