@@ -1660,6 +1660,7 @@ grid.arrange(CIN_Boxplot,
 | **[R Package]** [corrplot](https://cran.r-project.org/web/packages/corrplot/corrplot.pdf) by Taiyun Wei
 | **[R Package]** [SurvMetrics](https://cran.r-project.org/web/packages/SurvMetrics/SurvMetrics.pdf) by Hanpu Zhou
 | **[R Package]** [randomForestSRC](https://cran.r-project.org/web/packages/randomForestSRC/randomForestSRC.pdf) by Hemant Ishwaran and Udaya Kogalur
+| **[R Package]** [pec](https://cran.r-project.org/web/packages/pec/pec.pdf) by  Thomas Gerds
 | **[Article]** [Predictive Evaluation Metrics in Survival Analysis](https://cran.r-project.org/web/packages/SurvMetrics/vignettes/SurvMetrics-vignette.html) by Zhou Hanpu
 | **[Article]** [Random Survival Forests](https://www.randomforestsrc.org/articles/survival.html) by Hemant Ishwaran
 | **[Article]** [Survival Analysis](https://sphweb.bumc.bu.edu/otlt/MPH-Modules/BS/BS704_Survival/index.html) by Lisa Sullivan
