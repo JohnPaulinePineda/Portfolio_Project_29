@@ -749,6 +749,29 @@ dim(PMA_PreModelling_Train)
 EDA <- PMA_PreModelling_Train
 
 ##################################
+# Loading dataset
+##################################
+EDA.DescriptiveStatistics <- EDA
+
+EDA.DescriptiveStatistics$died <- ifelse(EDA.DescriptiveStatistics$died=="0","Survived+Censored","Died")
+
+##################################
+# Formulating a preliminary summary
+# of descriptive statistics 
+##################################
+EDA.DescriptiveStatistics %>%
+  tbl_summary(
+    by = died,
+    type = all_continuous() ~ "continuous2",
+    statistic = all_continuous() ~ c("{N_nonmiss}",
+                                     "{mean} ({sd})", 
+                                     "{median} ({p25}, {p75})", 
+                                     "{min}, {max}"),
+    missing = "no") %>% 
+  add_overall() %>% 
+  add_p()
+
+##################################
 # Listing all predictors
 ##################################
 EDA.Predictors <- EDA[,!names(EDA) %in% c("died","ttodead")]
