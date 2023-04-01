@@ -1187,7 +1187,9 @@ arrange_ggsurvplots(KMPlot_List,
 ###  1.5.1 Concordance Index (CIN)
 |
 | [CIN](https://jamanetwork.com/journals/jama/article-abstract/372568) is a rank correlation measure between a predictor and a possibly censored outcome with an event or censoring indicator. In survival analysis, a pair of patients is called concordant if the risk of the event predicted by a model is lower for the patient who experiences the event at a later time point. The concordance probability (C-index) is the frequency of concordant pairs among all pairs of subjects which can be used to measure and compare the discrimination power of risk prediction models.
+|
 | [Random Survival Forest](https://onlinelibrary.wiley.com/doi/abs/10.1002/sam.10103) builds an ensemble of tree-based learners based on different bootstrap samples of the original training data and only evaluates the split criterion compatible with censored survival times at each node for a randomly selected subset of features and thresholds. Final predictions are formed by aggregating the predictions of individual trees in the ensemble.
+|
 | [Cox Proportional Hazards](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.2517-6161.1972.tb00899.x) examines the relationship between a hazard function and a set of covariates by assuming that predictors act multiplicatively on the hazard function without any explicit assumption of its distributional form. The model is semi-parametric because while the baseline hazard can take any form, the covariates enter the model linearly. 
 |
 | **[A]** The CIN metric was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
@@ -1298,7 +1300,9 @@ for (i in 1:25) {
 ###  1.5.2 Brier Score (BSC)
 |
 | [BSC](https://journals.ametsoc.org/view/journals/mwre/78/1/1520-0493_1950_078_0001_vofeit_2_0_co_2.xml) is the mean square difference between the true classes and predicted probabilities. Serving as a a form of cost function, it is considered a proper score which means that it takes its minimal value only when the predicted probabilities match the empirical probabilities.
+|
 | [Random Survival Forest](https://onlinelibrary.wiley.com/doi/abs/10.1002/sam.10103) builds an ensemble of tree-based learners based on different bootstrap samples of the original training data and only evaluates the split criterion compatible with censored survival times at each node for a randomly selected subset of features and thresholds. Final predictions are formed by aggregating the predictions of individual trees in the ensemble.
+|
 | [Cox Proportional Hazards](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.2517-6161.1972.tb00899.x) examines the relationship between a hazard function and a set of covariates by assuming that predictors act multiplicatively on the hazard function without any explicit assumption of its distributional form. The model is semi-parametric because while the baseline hazard can take any form, the covariates enter the model linearly.
 |
 | **[A]** The BSC metric for the median survival time was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
@@ -1412,7 +1416,9 @@ for (i in 1:25) {
 ###  1.5.3 Integrated Absolute Error (IAE)
 |
 | [IAE](https://link.springer.com/article/10.1007/s10985-016-9372-1) is a type of continuous-time approach to continuous-time identification based on least-absolute errors.
+|
 | [Random Survival Forest](https://onlinelibrary.wiley.com/doi/abs/10.1002/sam.10103) builds an ensemble of tree-based learners based on different bootstrap samples of the original training data and only evaluates the split criterion compatible with censored survival times at each node for a randomly selected subset of features and thresholds. Final predictions are formed by aggregating the predictions of individual trees in the ensemble.
+|
 | [Cox Proportional Hazards](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.2517-6161.1972.tb00899.x) examines the relationship between a hazard function and a set of covariates by assuming that predictors act multiplicatively on the hazard function without any explicit assumption of its distributional form. The model is semi-parametric because while the baseline hazard can take any form, the covariates enter the model linearly.
 |
 | **[A]** The IAE metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
@@ -1529,7 +1535,9 @@ for (i in 1:25) {
 ###  1.5.4 Integrated Square Error (ISE)
 |
 | [ISE](https://link.springer.com/article/10.1007/s11424-021-9307-0) is a type of continuous-time approach to continuous-time identification based on least-squares errors.
+|
 | [Random Survival Forest](https://onlinelibrary.wiley.com/doi/abs/10.1002/sam.10103) builds an ensemble of tree-based learners based on different bootstrap samples of the original training data and only evaluates the split criterion compatible with censored survival times at each node for a randomly selected subset of features and thresholds. Final predictions are formed by aggregating the predictions of individual trees in the ensemble.
+|
 | [Cox Proportional Hazards](https://rss.onlinelibrary.wiley.com/doi/abs/10.1111/j.2517-6161.1972.tb00899.x) examines the relationship between a hazard function and a set of covariates by assuming that predictors act multiplicatively on the hazard function without any explicit assumption of its distributional form. The model is semi-parametric because while the baseline hazard can take any form, the covariates enter the model linearly.
 |
 | **[A]** The ISE metric for the survival time range was calculated for both the formulated Random Survival Forest (RSF) and Cox Proportional Hazards (CPH) models using the <mark style="background-color: #CCECFF">**SurvMetrics**</mark>, <mark style="background-color: #CCECFF">**randomForestSRC**</mark> and <mark style="background-color: #CCECFF">**survival**</mark> packages.  
