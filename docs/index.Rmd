@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.width=15, fig.height=10)
 ```
 # **1. Table of Contents**
 |
-| This document implements a comparison of evaluation metrics for assessing survival model performance using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>.    
+| This project explores the various performance metrics which are adaptable to censoring conditions for evaluating survival model predictions using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>. Using the **Survival Random Forest** and **Cox Proportional Hazards Regression** model structures, metrics applied in the analysis to estimate the generalization performance of survival models on out-of-sample data included the **Concordance Index**, **Brier Score**, **Integrated Absolute Error** and **Integrated Square Error**. The resulting split-sample cross-validated estimations derived from the metrics were evaluated in terms of their performance consistency across the candidate models. Considering the differences in their intended applications and current data restrictions, a comparison of each metric’s strengths and limitations was briefly discussed.
 |
 | Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the agreement between the predicted and actual measures for each observation (expressed in survival probability, status or time), while considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions on unseen data.
 |
