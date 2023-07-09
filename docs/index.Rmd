@@ -1,5 +1,5 @@
 ---
-title: 'R : Exploring Performance Evaluation Metrics for Survival Prediction'
+title: 'Supervised Learning : Exploring Performance Evaluation Metrics for Survival Prediction'
 author: "John Pauline Pineda"
 date: "March 10, 2023"
 output: 
