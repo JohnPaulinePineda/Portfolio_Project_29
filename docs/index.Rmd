@@ -16,7 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, fig.width=15, fig.height=10)
 ```
 # **1. Table of Contents**
 |
-| This project explores different performance metrics which are adaptable to censoring conditions for evaluating survival model predictions using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>. Using the **Survival Random Forest** and **Cox Proportional Hazards Regression** model structures, metrics applied in the analysis to estimate the generalization performance of survival models on out-of-sample data included the **Concordance Index**, **Brier Score**, **Integrated Absolute Error** and **Integrated Square Error**. The resulting split-sample cross-validated estimations derived from the metrics were evaluated in terms of their performance consistency across the candidate models. Considering the differences in their intended applications and current data restrictions, a comparison of each metric’s strengths and limitations was briefly discussed.
+| This project explores different performance metrics which are adaptable to censoring conditions for evaluating survival model predictions using various helpful packages in <mark style="background-color: #CCECFF">**R**</mark>. Using the **Survival Random Forest** and **Cox Proportional Hazards Regression** model structures, metrics applied in the analysis to estimate the generalization performance of survival models on out-of-sample data included the **Concordance Index**, **Brier Score**, **Integrated Absolute Error** and **Integrated Square Error**. The resulting split-sample cross-validated estimations derived from the metrics were evaluated in terms of their performance consistency across the candidate models. Considering the differences in their intended applications and current data restrictions, a comparison of each metric’s strengths and limitations was briefly discussed. All results were consolidated in a [<span style="color: #FF0000">**Summary**</span>](#summary) presented at the end of the document.
 |
 | Survival analysis aims to study the relationship between independent covariates and survival time and event outcomes. Evaluation metrics in survival analysis are used to ascertain the agreement between the predicted and actual measures for each observation (expressed in survival probability, status or time), while considering the censoring condition. The metrics applied in this study (mostly contained in the <mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) attempt to evaluate the performance of survival model predictions on unseen data.
 |
@@ -118,8 +118,6 @@ PDA <- peakVO2
 </details>
 
 ##  1.2 Data Quality Assessment
-|
-| Data quality assessment:
 |
 | **[A]** No missing observations noted for any variable.
 |
@@ -366,8 +364,6 @@ if (length(names(DQA.Descriptors.Numeric))==0) {
 
 ###  1.3.1 Outlier
 |
-| Outlier data assessment:
-|
 | **[A]** Outliers noted for 12 variables  with the numeric data visualized through a boxplot including observations classified as suspected outliers using the IQR criterion. The IQR criterion means that all observations above the (75th percentile + 1.5 x IQR) or below the (25th percentile - 1.5 x IQR) are suspected outliers, where IQR is the difference between the third quartile (75th percentile) and first quartile (25th percentile). Outlier treatment for numerical stability remains optional depending on potential model requirements for the subsequent steps.
 |      **[A.1]** <span style="color: #FF0000">age</span> variable (33 outliers detected)
 |      **[A.2]** <span style="color: #FF0000">resting.systolic.bp</span> variable (26 outliers detected)
@@ -440,8 +436,6 @@ dim(DPA.Predictors.Numeric)
 </details>
 
 ###  1.3.2 Zero and Near-Zero Variance
-|
-| Zero and near-zero variance data assessment:
 |
 | **[A]** Low variance noted for 10 variables from the previous data quality assessment using a lower threshold.
 |
@@ -517,8 +511,6 @@ if ((nrow(DPA_LowVariance[DPA_LowVariance$nzv,]))==0){
 </details>
 
 ###  1.3.3 Collinearity
-|
-| High collinearity data assessment:
 |
 | **[A]** No high correlation > 95% noted for any variable pairs as confirmed using the preprocessing summaries from the <mark style="background-color: #CCECFF">**caret**</mark> and <mark style="background-color: #CCECFF">**lares**</mark> packages.
 |
@@ -624,8 +616,6 @@ if (DPA_HighlyCorrelatedCount > 0) {
 
 ###  1.3.4 Linear Dependencies
 |
-| Linear dependency data assessment:
-|
 | **[A]** No linear dependencies noted for any subset of variables using the preprocessing summary from the <mark style="background-color: #CCECFF">**caret**</mark> package applying the <span style="color: #0000FF">findLinearCombos</span> method which utilizes the QR decomposition of a matrix to enumerate sets of linear combinations (if they exist). 
 |
 |
@@ -711,8 +701,6 @@ if (DPA_LinearlyDependentCount > 0) {
 
 ###  1.3.5 Pre-Processed Dataset
 |
-| Preliminary dataset assessment:
-|
 | **[A]** 2231 rows (observations)
 | 
 | **[B]** 39 columns (variables)
@@ -759,8 +747,6 @@ dim(PMA_PreModelling_Train)
 </details>
 
 ## 1.4 Data Exploration
-|
-| Exploratory data analysis:
 |
 | **[A]** Numeric variables which demonstrated differential relationships with the <span style="color: #FF0000">ttodead</span> and <span style="color: #FF0000">died</span> survival time and event status variables, based on trend line correlation with survival time, include:
 |      **[A.1]** <span style="color: #FF0000">peak.vo2</span> variable (numeric)
@@ -1723,9 +1709,7 @@ for (i in 1:25) {
 
 </details>
 
-##  1.6 Metric Comparison Summary
-|
-| Metric performance comparison:
+##  1.6 Consolidated Findings
 |
 | **[A]** All performance evaluation metrics for survival prediction showed consistent results in terms of identifying the CPH model as better performing than the RSF model. The conditions with which the usage for each metric will vary, will depend on their intended application and/or current data restrictions. 
 |      **[A.1]** **CIN : Concordance Index** (<mark style="background-color: #CCECFF">**SurvMetrics**</mark> package) evaluates the survival model's discriminative ability through rank correlation. It is the most commonly used survival model evaluation metric which is a generalization of the Receiver Operating Characteristics (ROC) curve in the case of a complete survival data. While it is an intuitive measure of model discrimination, it diminishes the effect of tied survival data. Updated versions of the metric apply methods to address this data restriction.
@@ -1748,8 +1732,12 @@ grid.arrange(CIN_Boxplot,
 ```
 
 </details>
-
-# **2. References**
+|
+# **2. Summary** <a name="summary"></a>
+|
+| ![](D:/Github_Codes/ProjectPortfolio/Portfolio_Project_29/docs/Project29_Summary.png)
+|
+# **3. References**
 |
 | **[Book]** [Clinical Prediction Models](http://clinicalpredictionmodels.org/) by Ewout Steyerberg
 | **[Book]** [Survival Analysis: A Self-Learning Text](https://link.springer.com/book/10.1007/978-1-4419-6646-9/) by David Kleinbaum and Mitchel Klein
