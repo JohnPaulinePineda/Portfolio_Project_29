@@ -1,6 +1,6 @@
 ---
 title: 'Supervised Learning : Exploring Performance Evaluation Metrics for Survival Prediction'
-author: "John Pauline Pineda"
+author: "<b><a href='https://github.com/JohnPaulinePineda'>John Pauline Pineda</a></b>"
 date: "March 10, 2023"
 output: 
   html_document:
@@ -902,7 +902,7 @@ EDA.Bar.Source.FactorVar.Prop.Group <- rbind(EDA.PropTable.Function(names(EDA.Ba
                                       stack=TRUE,
                                       ylab = "Proportion",
                                       xlab = "Structure",
-                                      auto.key = list(adj = 1),
+                                      auto.key = list(adj=1, space="top", columns=2),
                                       layout=(c(6,4))))
 
 ##################################
@@ -1735,7 +1735,7 @@ grid.arrange(CIN_Boxplot,
 |
 # **2. Summary** <a name="summary"></a>
 |
-| ![](D:/Github_Codes/ProjectPortfolio/Portfolio_Project_29/docs/Project29_Summary.png)
+| ![](D:/Github_Codes/ProjectPortfolio/Portfolio_Project_29/images/Project29_Summary.png)
 |
 # **3. References**
 |
